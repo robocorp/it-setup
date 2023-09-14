@@ -1,5 +1,5 @@
 # Define customer specific variables
-#$PROFILE_URL = "https://acme.robocorp.dev/.well-known/rcc-profile.yaml"
+#$PROFILE_URL = "https://<your sso id>.robocorp.com/.well-known/rcc-profile.yaml"
 #$ASSISTANT_VERSION = "robocorp-assistant-win-2.2.1.exe"
 
 # Store the current working directory
