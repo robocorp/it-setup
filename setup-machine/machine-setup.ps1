@@ -44,13 +44,20 @@ function RunCommand {
 
 function SetShared {
     Log "Enable machine level shared folder:"
+    $sharedFolder = "C:\ProgramData\robocorp"
+    $htFolder = "$sharedFolder\ht"
+    $sharedCheckFile = "$htFolder\shared.yes"
 
-    $folderPath = "C:\ProgramData\robocorpb\ht"
-    if (-not (Test-Path -Path $folderPath -PathType Container)) {
-        New-Item -Path $folderPath -ItemType Directory -Force | Out-Null
+    if (-not (Test-Path -Path $htFolder -PathType Container)) {
+        New-Item -Path $htFolder -ItemType Directory -Force | Out-Null
     }
-    RunCommand "echo $RCC_VERSION > $folderPath\shared.yes"
-    RunCommand "icacls '$folderPath' /grant 'BUILTIN\Users:(OI)(CI)M' /T"
+
+    if (Test-Path -Path $sharedCheckFile -PathType Leaf) {
+        Log "- Already activated"
+    } else {
+        RunCommand "icacls '$sharedFolder' /grant 'BUILTIN\Users:(OI)(CI)M' /T"
+        RunCommand "echo $RCC_VERSION > $sharedCheckFile"
+    }
 }
 
 # The main script
