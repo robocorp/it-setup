@@ -24,9 +24,7 @@ if (Test-Path -Path $isOkFile) {
 
 # Change the working directory to the Robocorp folder under %TEMP%
 Set-Location -Path $robocorpFolder
-$RCC_EXE = Join-Path -Path $robocorpFolder -ChildPath "rcc.exe"
 $LOGFILE = Join-Path -Path $robocorpFolder -ChildPath "machine.log"
-
 
 function Log {
     param ( [string]$Message )
@@ -34,18 +32,6 @@ function Log {
     if ($LOGFILE) {
         $Message | Out-File -Append -FilePath $LOGFILE
     }
-}
-
-function GetRCC {
-    # Get RCC using curl
-    if ([string]::IsNullOrEmpty($RCC_VERSION)) {
-        $RCC_VERSION = "latest"
-    }
-   
-    Log "Get RCC: $RCC_VERSION"
-    curl.exe -s -o $RCC_EXE "https://downloads.robocorp.com/rcc/releases/$RCC_VERSION/windows64/rcc.exe" | Out-File -FilePath $LOGFILE -Append
-    
-    Log "Using RCC from: $RCC_EXE"
 }
 
 function RunCommand {
@@ -56,14 +42,15 @@ function RunCommand {
     Invoke-Expression -Command $command | Out-File -FilePath $LOGFILE -Append
 }
 
-function RccCommand {
-    param (
-        [string]$Arguments
-    )
+function SetShared {
+    Log "Enable machine level shared folder:"
 
-    $command = "$RCC_EXE $Arguments"
-    Log " - > $command"
-    Invoke-Expression -Command $command | Out-File -FilePath $LOGFILE -Append
+    $folderPath = "C:\ProgramData\robocorpb\ht"
+    if (-not (Test-Path -Path $folderPath -PathType Container)) {
+        New-Item -Path $folderPath -ItemType Directory -Force | Out-Null
+    }
+    RunCommand "echo $RCC_VERSION > $folderPath\shared.yes"
+    RunCommand "icacls '$folderPath' /grant 'BUILTIN\Users:(OI)(CI)M' /T"
 }
 
 # The main script
@@ -72,17 +59,10 @@ try {
     "Running at: $(Get-Date)" | Out-File -FilePath $LOGFILE
     "Logging to: $LOGFILE"
 
-    # Get RCC
-    GetRCC
-
     Log "Fix Long paths:"
     RunCommand "reg add `"HKLM\SYSTEM\CurrentControlSet\Control\FileSystem`" /v LongPathsEnabled /t REG_DWORD /d 1 /f"
 
-    Log "Enable machine level shared folder:"
-    RccCommand "ht shared --enable --once --silent"
-
-    Log "Diagnostics:"
-    RccCommand "config diag --silent"
+    SetShared
 
     # Done
     Log "Done, writing ok file: $isOkFile"
