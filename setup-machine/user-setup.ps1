@@ -1,6 +1,6 @@
 # Define customer specific variables
 #$PROFILE_URL = "https://<your sso id>.robocorp.com/.well-known/rcc-profile.yaml"
-$ASSISTANT_VERSION = "latest" # Set to 'latest' or get version form: https://updates.robocorp.com/tag/assistant
+#$ASSISTANT_VERSION = "latest" # Set to 'latest' or get version form: https://updates.robocorp.com/tag/assistant
 
 # Store the current working directory
 $originalPath = Get-Location
