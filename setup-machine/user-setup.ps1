@@ -1,6 +1,6 @@
 # Define customer specific variables
 #$PROFILE_URL = "https://<your sso id>.robocorp.com/.well-known/rcc-profile.yaml"
-#$ASSISTANT_VERSION = "robocorp-assistant-win-2.2.1.exe"
+$ASSISTANT_VERSION = "latest" # Set to 'latest' or get version form: https://updates.robocorp.com/tag/assistant
 
 # Store the current working directory
 $originalPath = Get-Location
@@ -145,20 +145,36 @@ function FixRobocorpHome {
 
 }
  
-function InstallAssistant {
-    if ([string]::IsNullOrEmpty($ASSISTANT_VERSION)) {
+function InstallAssistantForUser {
+    param (
+        [string]$version
+    )
+    
+    if ([string]::IsNullOrEmpty($version)) {
         return
     }
 
-    $ASSISTANT_EXE = Join-Path -Path $robocorpFolder -ChildPath $ASSISTANT_VERSION
-
-    Log "Installing Assistant: $ASSISTANT_VERSION"
-    $url = "https://downloads.robocorp.com/assistant/releases/v2/$ASSISTANT_VERSION"
-    curl.exe -s -o $ASSISTANT_EXE $url | Out-File -FilePath $LOGFILE -Append
-
-    $command = "$ASSISTANT_EXE /S"
-    Log " - > $command"
-    Invoke-Expression -Command $command | Out-File -FilePath $LOGFILE -Append
+    $baseUrl = "https://downloads.robocorp.com/assistant/releases/v2"
+    $exe = ""
+    if ($version -like "latest") {
+        $url = "$baseUrl/latest.yml"
+        $fileContent = $(curl.exe -s $url)
+        $lines = $fileContent -split "`r`n"
+        $pathLine = $lines | Where-Object { $_ -match '^path:' }
+        if ($pathLine -ne $null) {
+            $exe = ($pathLine -split ': ', 2)[1].Trim()
+        }
+    } else {
+        $exe = "robocorp-assistant-win-$version.exe"
+    }
+    
+    $url = "$baseUrl/$exe"
+    $installer = Join-Path -Path $robocorpFolder -ChildPath "assistant.exe"
+    Log "Downloading Assistant installer"
+    Log "- $url"
+    curl.exe -s -o $installer $url
+    Log "Installing Assistant from: $installer"
+    RunCommand "$installer /S"
 }
 
 # The main script
@@ -181,9 +197,9 @@ try {
     SetProfile
 
     # Install Assistant
-    InstallAssistant
+    InstallAssistantForUser $ASSISTANT_VERSION
 
-    #Log "Diagnostics:"
+    Log "Diagnostics:"
     RunCommand "$RCC_EXE config diag --silent"
 
     # Done
