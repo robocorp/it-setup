@@ -1,6 +1,6 @@
 # Define customer specific variables
 #$PROFILE_URL = "https://<your sso id>.robocorp.com/.well-known/rcc-profile.yaml"
-#$ASSISTANT_VERSION = "robocorp-assistant-win-2.2.1.exe"
+$ASSISTANT_VERSION = "latest" # Set to 'latest' or get version form: https://updates.robocorp.com/tag/assistant
 
 # Store the current working directory
 $originalPath = Get-Location
@@ -33,10 +33,45 @@ $LOGFILE = Join-Path -Path $robocorpFolder -ChildPath "user.log"
 
 
 function Log {
-    param ( [string]$Message )
-    Write-Host $Message
+    param ( 
+        [string]$Message,
+        [bool]$LogFileOnly = $false
+    )
+    if (-not $LogFileOnly) {
+        Write-Host $Message
+    }
+
     if ($LOGFILE) {
         $Message | Out-File -Append -FilePath $LOGFILE
+    }
+}
+
+function RunCommand {
+    param (
+        [string]$command
+    )
+    Log " - > $command"
+    Invoke-Expression -Command $command | Out-File -FilePath $LOGFILE -Append
+}
+
+function MimicPermissions {
+    # Mimic folder permissions to another folder
+    param (
+        [string]$sourcePath,
+        [string]$targetPath
+    )
+
+    Log "Set permission of $sourcePath to $targetPath"
+    # Get the security descriptor of the source AppData folder
+    $sourcePermissions = Get-Acl -Path $sourcePath
+
+    # Apply the same security descriptor to the target folder and its contents (recursively)
+    Set-Acl -Path $targetPath -AclObject $sourcePermissions
+
+    # Apply the same security descriptor to all child items (files and sub-folders) within the target folder
+    Get-ChildItem -Path $targetPath -Recurse | ForEach-Object {
+        Set-Acl -Path $_.FullName -AclObject $sourcePermissions
+        Log $_.FullName $true
     }
 }
 
@@ -52,16 +87,6 @@ function GetRCC {
     Log "Using RCC from: $RCC_EXE"
 }
 
-function RccCommand {
-    param (
-        [string]$Arguments
-    )
-
-    $command = "$RCC_EXE $Arguments"
-    Log " - > $command"
-    Invoke-Expression -Command $command | Out-File -FilePath $LOGFILE -Append
-}
-
 function SetProfile {
     # Load and switch to a profile
 
@@ -72,10 +97,18 @@ function SetProfile {
     Log "Setting profile from: $PROFILE_URL"
     curl.exe -s -o "profile.yaml" $PROFILE_URL | Out-File -FilePath $LOGFILE -Append
     
-    RccCommand "config import -f 'profile.yaml' -s --silent"
+    RunCommand "$RCC_EXE config import -f 'profile.yaml' -s --silent"
 
     # Just to log the profiles and the activated one
-    RccCommand "config switch --silent"
+    RunCommand "$RCC_EXE config switch --silent"
+}
+
+function GetRobocorpHome {
+    $path = $env:LocalAppData
+    if (-not $env:ROBOCORP_HOME -eq "") {
+        $path = $env:ROBOCORP_HOME
+    }
+    return $path
 }
 
 function FixRobocorpHome {
@@ -83,10 +116,7 @@ function FixRobocorpHome {
     # Detects if needed: path cannot contain non-ASCII characters or spaces
     Log "Check ROBOCORP_HOME"
 
-    $pathToTest = $env:LocalAppData
-    if (-not $env:ROBOCORP_HOME -eq "") {
-        $pathToTest = $env:ROBOCORP_HOME
-    }
+    $pathToTest = GetRobocorpHome
 
     $robocorpHomeNeeded = $pathToTest -match '[^\u0000-\u007F\s]'
     if (-not $robocorpHomeNeeded) {
@@ -112,31 +142,47 @@ function FixRobocorpHome {
         $env:ROBOCORP_HOME = $newRobocorpHome
         Log "Set ROBOCORP_HOME=$newRobocorpHome"
     }
+
 }
  
-function InstallAssistant {
-    if ([string]::IsNullOrEmpty($ASSISTANT_VERSION)) {
+function InstallAssistantForUser {
+    param (
+        [string]$version
+    )
+    
+    if ([string]::IsNullOrEmpty($version)) {
         return
     }
 
-    $ASSISTANT_EXE = Join-Path -Path $robocorpFolder -ChildPath $ASSISTANT_VERSION
-
-    Log "Installing Assistant: $ASSISTANT_VERSION"
-    $url = "https://downloads.robocorp.com/assistant/releases/v2/$ASSISTANT_VERSION"
-    curl.exe -s -o $ASSISTANT_EXE $url | Out-File -FilePath $LOGFILE -Append
-
-    $command = "$ASSISTANT_EXE /S"
-    Log " - > $command"
-    Invoke-Expression -Command $command | Out-File -FilePath $LOGFILE -Append
+    $baseUrl = "https://downloads.robocorp.com/assistant/releases/v2"
+    $exe = ""
+    if ($version -like "latest") {
+        $url = "$baseUrl/latest.yml"
+        $fileContent = $(curl.exe -s $url)
+        $lines = $fileContent -split "`r`n"
+        $pathLine = $lines | Where-Object { $_ -match '^path:' }
+        if ($pathLine -ne $null) {
+            $exe = ($pathLine -split ': ', 2)[1].Trim()
+        }
+    } else {
+        $exe = "robocorp-assistant-win-$version.exe"
+    }
+    
+    $url = "$baseUrl/$exe"
+    $installer = Join-Path -Path $robocorpFolder -ChildPath "assistant.exe"
+    Log "Downloading Assistant installer"
+    Log "- $url"
+    curl.exe -s -o $installer $url
+    Log "Installing Assistant from: $installer"
+    RunCommand "$installer /S"
 }
-
 
 # The main script
 try {
     # Start a fresh log
     "Running at: $(Get-Date)" | Out-File -FilePath $LOGFILE
     "Logging to: $LOGFILE"
-
+    
     # Get RCC
     GetRCC
 
@@ -145,16 +191,16 @@ try {
 
     # Use Shared holotree
     Log "Initialize shared holotree:"
-    RccCommand "ht init --silent"
+    RunCommand "$RCC_EXE ht init --silent"
 
     # Set Profile
     SetProfile
 
     # Install Assistant
-    InstallAssistant
+    InstallAssistantForUser $ASSISTANT_VERSION
 
     Log "Diagnostics:"
-    RccCommand "config diag --silent"
+    RunCommand "$RCC_EXE config diag --silent"
 
     # Done
     Log "Done, writing ok file: $isOkFile"
