@@ -8,6 +8,12 @@ The reasons are varied, and you can find more detailed explanations in our docum
 
 The scripts here allow you to toggle the permission to allow SSL Legacy Renegotiation for NodeJS and Python stacks.
 
+Easy way to just download the scripts is to use curl:
+```
+curl.exe -o allow-ssl-legacy.ps1 https://raw.githubusercontent.com/robocorp/it-setup/master/ssl/allow-ssl-legacy.ps1
+curl.exe -o deny-ssl-legacy.ps1 https://raw.githubusercontent.com/robocorp/it-setup/master/ssl/deny-ssl-legacy.ps1
+```
+
 > Scripts below need to be executed in PowerShell with "run as administrator"
 
 ## [allow-ssl-legacy.ps1](allow-ssl-legacy.ps1)

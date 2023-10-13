@@ -1,7 +1,14 @@
 # Cleanup old / existing Robocorp Windows Worker setups
 
 The script helps in cleaning up old or failed installation of Robocorp Windows Worker (a.k.a RDP Worker)
-* Open Powershell as admin (need admin permissions to work with Windows Services)
+
+Easy way to just download the script is to use curl:
+```
+curl.exe -o cleanup-windows-worker.ps1 https://raw.githubusercontent.com/robocorp/it-setup/master/cleanup/cleanup-windows-worker.ps1
+```
+
+> Script needs to be executed in PowerShell with "run as administrator"
+
 * Get the service name you need to cleanup via Windows Service or from Task Scheduler job
 * The username you can get from `echo %USERNAME%`
 * Run: `.\cleanup-windows-worker.ps1 <service name> <user_name> -DryRun` to see what would happen
