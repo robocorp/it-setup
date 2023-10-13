@@ -4,7 +4,7 @@
 
 # Store the current working directory
 $originalPath = Get-Location
-$RCC_VERSION = "v16.2.1"
+$RCC_VERSION = "v17.1.3"
 
 # Define the Robocorp folder under %TEMP%
 $robocorpFolder = Join-Path -Path "C:\robocorp" -ChildPath "setup\user"
