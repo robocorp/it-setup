@@ -2,9 +2,15 @@
 param (
     [Parameter(Mandatory=$true)]
     [string]$SERVICE_NAME,
-
+    [string]$USER_NAME,
     [switch]$DryRun
 )
+
+# Check if PowerShell is run as administrator
+if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+    Write-Output "Please run this script as an administrator."
+    Exit
+}
 
 # Step 2: Stop the service using Stop-Service cmdlet
 Write-Output "Stopping service: $SERVICE_NAME"
@@ -38,21 +44,30 @@ $remainingTasks | ForEach-Object {
 	 Write-Output ("- " + $_.TaskName)
 }
 
+# Step 7: Find and remove status files related to the worker
 $workersPath="$env:ProgramData\robocorp\workers" 
 $matchingFiles = Get-ChildItem -Path $workersPath -Filter '*.json' -Recurse |
     Where-Object { (Get-Content $_.FullName -Raw) -match $SERVICE_NAME }
 
-# Output the matching files
 Write-Output "Matching '*.json' files:"
 $matchingFiles | ForEach-Object {
     Write-Output $_.FullName
 }
 
-# Step 9: Remove matching '*.status.json' and Step 10: Remove matching '*.service.json'
 if (-not $DryRun) {
     Write-Output "Removing matching '*.status.json' files:"
     $matchingFiles | ForEach-Object {
         Write-Output $_.FullName
         Remove-Item $_.FullName -Force
     }
+}
+
+# Step 8: Delete the user-specific worker folder
+$folderPath = "C:\Users\$USER_NAME\AppData\Local\robocorp\workforce-agent-core-service"
+if (Test-Path $folderPath -PathType Container) {
+	Write-Output "Found user specific worker folder at: $folderPath"
+	Write-Output "Deleting folder: $folderPath"
+	if (-not $DryRun) {
+		Remove-Item $folderPath -Recurse -Force
+	}
 }
