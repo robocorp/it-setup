@@ -13,7 +13,7 @@ The scripts here allow you to toggle the permission to allow SSL Legacy Renegoti
 ## [allow-ssl-legacy.ps1](allow-ssl-legacy.ps1)
 
 Usage:
-```Powershell
+```PowerShell
 .\allow-ssl-legacy.ps1 -Level user
 .\allow-ssl-legacy.ps1 -Level system
 ```
@@ -29,7 +29,7 @@ Usage:
 
 ## [deny-ssl-legacy.ps1](deny-ssl-legacy.ps1)
 Usage:
-```Powershell
+```PowerShell
 .\deny-ssl-legacy.ps1
 ```
 
