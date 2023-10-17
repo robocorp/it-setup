@@ -15,3 +15,12 @@ curl.exe -o cleanup-windows-worker.ps1 https://raw.githubusercontent.com/robocor
 * Run: `.\cleanup-windows-worker.ps1 <service name> <user_name>` to actually cleanup.
 
 We will improve this functionality in [Robocorp Setup Utility](https://robocorp.com/docs/control-room/setup-utility) once we have figure out all the different edge-cases
+
+
+## List existing Robocorp Services and Task Schedules on a machine
+
+```
+curl.exe -o list-services-and-tasks.ps1 https://raw.githubusercontent.com/robocorp/it-setup/master/cleanup/list-services-and-tasks.ps1
+```
+
+The script simply lists the existing Robocorp Services and Task Schedules with a few key details to help troubleshooting and cleanups actions.
