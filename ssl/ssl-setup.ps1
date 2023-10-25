@@ -8,7 +8,8 @@ param (
 ###################################################
 # Variables
 ###################################################
-$OpenSslConfigPath = Join-Path -Path $env:ProgramData -ChildPath "robocorp-openssl\openssl.cnf"
+$ProfileYamlUrl = "https://cloud.robocorp.com/.well-known/rcc-profile.yaml"
+
 
 ###################################################
 # Custom functions
@@ -67,6 +68,8 @@ function SetEnvVariable {
     }
 }
 
+# OpenSSL file path controlled by Robocorp, do not change
+$OpenSslConfigPath = Join-Path -Path $env:ProgramData -ChildPath "robocorp-openssl\openssl.cnf"
 function CreateOpenSslConfigFile {
    
     $configContent = @"
@@ -98,6 +101,43 @@ function RemoveOpenSslConfigFile {
     if (Test-Path -Path $OpenSslConfigPath) {
         Remove-Item -Path $OpenSslConfigPath -Force
     }
+}
+
+function GetRCC {
+    $RCC_VERSION=v17.3.0
+    $RCC_URL = "https://downloads.robocorp.com/rcc/releases/$RCC_VERSION/windows64/rcc.exe"
+    if (Test-Path rcc.exe) {
+        # Check version match
+    } else {
+        Log "Get RCC: $RCC_VERSION"
+        curl.exe -s -o rcc.exe $RCC_URL
+    }
+}
+
+function SetProfile {
+    # TBD: Get and set a profile that "someone" has made and has the correct setups
+
+    # Download and activate a profile.yaml from: $ProfileYamlUrl
+    curl.exe -s -o profile.yaml "ProfileYamlUrl"
+    GetRCC
+    rcc.exe config import profile.yaml -s
+}
+
+function CheckProfile {
+    # TBD: Check if the existing profile has the required settings
+    # SSL no revoke=true
+    # SSL legacy reneg. allow=true
+    # Maybe CAbundle existance..?
+
+    # Download and activate a profile.yaml from: $ProfileYamlUrl
+    GetRCC
+    rcc.exe config setting -j
+}
+
+function RemoveProfile {
+    #Just switch to the default/no-profile
+    GetRCC
+    rcc.exe config switch --no-profile
 }
 
 
