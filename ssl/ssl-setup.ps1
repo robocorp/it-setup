@@ -104,12 +104,12 @@ function RemoveOpenSslConfigFile {
 }
 
 function GetRCC {
-    $RCC_VERSION=v17.3.0
+    $RCC_VERSION="v17.3.0"
     $RCC_URL = "https://downloads.robocorp.com/rcc/releases/$RCC_VERSION/windows64/rcc.exe"
     if (Test-Path rcc.exe) {
         # Check version match
     } else {
-        Log "Get RCC: $RCC_VERSION"
+        Write-Host "Get RCC: $RCC_VERSION"
         curl.exe -s -o rcc.exe $RCC_URL
     }
 }
@@ -118,24 +118,26 @@ function SetProfile {
     # TBD: Get and set a profile that "someone" has made and has the correct setups
 
     # Download and activate a profile.yaml from: $ProfileYamlUrl
-    curl.exe -s -o profile.yaml "ProfileYamlUrl"
+    curl.exe -s -o profile.yaml $ProfileYamlUrl
     GetRCC
-    rcc.exe config import profile.yaml -s
+    rcc.exe config import --filename profile.yaml --switch
 }
 
 function CheckProfile {
-    # TBD: Check if the existing profile has the required settings
+    # Download and activate a profile.yaml from: $ProfileYamlUrl
+    GetRCC
+
+    # Just string search from:
+    $currentSettings = rcc.exe config settings -j
+    $currentSettings
+    # TBD: Check if $currentSettings contains has the required settings
     # SSL no revoke=true
     # SSL legacy reneg. allow=true
     # Maybe CAbundle existance..?
-
-    # Download and activate a profile.yaml from: $ProfileYamlUrl
-    GetRCC
-    rcc.exe config setting -j
 }
 
 function RemoveProfile {
-    #Just switch to the default/no-profile
+    # Switch to the default/no-profile
     GetRCC
     rcc.exe config switch --no-profile
 }
