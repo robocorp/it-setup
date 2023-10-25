@@ -5,26 +5,6 @@ param (
     [switch]$Help
 )
 
-# Check if PowerShell is run as administrator
-if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    Write-Output "Please run this script as an administrator."
-    Exit
-}
-
-# Help -flag prints the documentation
-$documentation = @"
-# Script Description
-
-This script ...
-
-Usage: .\template.ps1 [-DryRun] [-Overwrite] [-Help]
-"@
-
-if ($Help) {
-    Write-Host $documentation
-    Exit(0)
-}
-
 ###################################################
 # Variables
 ###################################################
@@ -35,7 +15,9 @@ $OpenSslConfigPath = Join-Path -Path $env:ProgramData -ChildPath "robocorp-opens
 ###################################################
 function CheckEnvVariable {
     param (
+        [Parameter(Position = 0, Mandatory = $true)]
         [string]$variableName,
+        [Parameter(Position = 1)]
         [string]$target = "User" # User / Machine
     )
 
@@ -52,6 +34,7 @@ function CheckEnvVariable {
 
 function RemoveEnvVariable {
     param (
+        [Parameter(Position = 0, Mandatory = $true)]
         [string]$variableName
     )
 
@@ -70,8 +53,11 @@ function RemoveEnvVariable {
 
 function SetEnvVariable {
     param (
+        [Parameter(Position = 0, Mandatory = $true)]
         [string]$variableName,
+        [Parameter(Position = 1, Mandatory = $true)]
         [string]$variableValue,
+        [Parameter(Position = 2)]
         [string]$target = "User" # User / Machine
     )
     $exists = CheckEnvVariable($variableName, $target)
@@ -81,7 +67,7 @@ function SetEnvVariable {
     }
 }
 
-function createOpenSslConfigFile {
+function CreateOpenSslConfigFile {
    
     $configContent = @"
 nodejs_conf = openssl_init
@@ -102,20 +88,16 @@ Options = UnsafeLegacyRenegotiation
         # Write the content to openssl.cnf
         Set-Content -Path $OpenSslConfigPath -Value $configContent
 
-        Write-Host "[X] OpenSSL Config written to $OpenSslConfigPath"
+        Write-Host "[X] OpenSSL config written to $OpenSslConfigPath"
     } catch {
-        Write-Host "[!!] Error writing the OpenSSL Config to $OpenSslConfigPath : $_"
+        Write-Host "[!!] Error writing the OpenSSL config to $OpenSslConfigPath : $_"
     }
 }
 
-function legacyssl {
-    
-    # Step 2 write the env var for the OPENSS_CONF
-    Set-EnvironmentVariable -VariableName "OPENSSL_CONF" -VariableValue $configPath
-
-    # Step 3 write the env var for RC_TLS_LEGACY_RENEGOTIATION_ALLOWED
-    Set-EnvironmentVariable -VariableName "RC_TLS_LEGACY_RENEGOTIATION_ALLOWED" -VariableValue "true"
-
+function RemoveOpenSslConfigFile {
+    if (Test-Path -Path $OpenSslConfigPath) {
+        Remove-Item -Path $OpenSslConfigPath -Force
+    }
 }
 
 
@@ -124,10 +106,24 @@ function legacyssl {
 # - Even partial or failed should return $true
 ###################################################
 function DetectSetup {
-    $found = $true
-    if ($found) {
-        Write-Host "Found previous setup"
-    } else {
+    $found = $false
+    Write-Host "Check existing setups..."
+    if (CheckEnvVariable "OPENSSL_CONF") {
+        Write-Host "- OPENSSL_CONF is set"
+        $found = $true
+    }
+
+    if (CheckEnvVariable "RC_TLS_LEGACY_RENEGOTIATION_ALLOWED") {
+        Write-Host "- RC_TLS_LEGACY_RENEGOTIATION_ALLOWED is set"
+        $found = $true
+    }
+
+    if (Test-Path -Path $OpenSslConfigPath) {
+        Write-Host "- Found OpenSSL config file"
+        $found = $true
+    }
+
+    if (-not $found) {
         Write-Host "Did not find previous setups, executing..."
     }
 
@@ -139,10 +135,27 @@ function DetectSetup {
 ###################################################
 function ValidSetup {
     $valid = $true
+
+    Write-Host "Check setup validity..."
+    if (-not (CheckEnvVariable "OPENSSL_CONF")) {
+        Write-Host "- OPENSSL_CONF is not set"
+        $valid = $false
+    }
+
+    if (-not (CheckEnvVariable "RC_TLS_LEGACY_RENEGOTIATION_ALLOWED")) {
+        Write-Host "- RC_TLS_LEGACY_RENEGOTIATION_ALLOWED is not set"
+        $valid = $false
+    }
+
+    if (-not (Test-Path -Path $OpenSslConfigPath)) {
+        Write-Host "- OpenSSL config file not found"
+        $valid = $false
+    }
+
     if ($valid) {
         Write-Host "Setup OK!"
     } else {
-        Write-Host "Invalid setup found!"
+        Write-Host "Setup was not successful!"
     }
     return [bool]$valid
 }
@@ -154,12 +167,21 @@ function ValidSetup {
 function RunSetup {
     try {
         # Script logic here
-        if ($DryRun) {
-            Write-Host "Setup would perform the following:"
-            Write-Host "- Hello World!"
-        } else {
-            # Perform actual actions
-            Write-Host "Running setup..."
+        Write-Host "Running setup..."
+
+        Write-Host "- Create OpenSSL config file to: $OpenSslConfigPath"
+        if (-not $DryRun) {
+            CreateOpenSslConfigFile
+        }
+
+        Write-Host "- Set env. variable: OPENSSL_CONF=$OpenSslConfigPath"
+        if (-not $DryRun) {
+            SetEnvVariable "OPENSSL_CONF" $OpenSslConfigPath
+        }
+
+        Write-Host "- Set env. variable: RC_TLS_LEGACY_RENEGOTIATION_ALLOWED=True"
+        if (-not $DryRun) {
+            SetEnvVariable "RC_TLS_LEGACY_RENEGOTIATION_ALLOWED" "True"
         }
     } catch {
         # Capture and handle errors here
@@ -174,12 +196,23 @@ function RunSetup {
 ###################################################
 function ClearSetup {
     try {
-        if ($DryRun) {
-            Write-Host "Clearing would perform the following actions:"
-            Write-Host "- Remove Hello World!"
-        } else {
-            Write-Host "Clearing setup..."
+        Write-Host "Clearing setup:"
+
+        Write-Host "- Remove env. variable: OPENSSL_CONF"
+        if (-not $DryRun) {
+            RemoveEnvVariable "OPENSSL_CONF"
         }
+
+        Write-Host "- Remove env. variable: RC_TLS_LEGACY_RENEGOTIATION_ALLOWED"
+        if (-not $DryRun) {
+            RemoveEnvVariable "RC_TLS_LEGACY_RENEGOTIATION_ALLOWED"
+        }
+
+        Write-Host "- Remove OpenSSL config at: $OpenSslConfigPath"
+        if (-not $DryRun) {
+            RemoveOpenSslConfigFile
+        }
+
     } catch {
         # Capture and handle errors here
         Write-Host "ClearSetup Failed!"
@@ -190,8 +223,35 @@ function ClearSetup {
 
 
 ###################################################
-# The base script
+# Main script start
 ###################################################
+
+# Check if PowerShell is run as administrator
+if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+    Write-Output "Please run this script as an administrator."
+    Exit
+}
+
+# Help -flag prints the documentation
+$documentation = @"
+# Enable SSL workarounds for cases with proxy, MITM Firewall, etc.
+
+- Enables NodeJS tools and applications to work inside proxy networks
+  - Creates an OpenSSL config file that allows legacy renegoation
+  - Sets environment variable 'OPENSSL_CONF=<path to config file>' to point to the config file
+- Enables Python toolstacks to work inside proxy networks
+  - Sets environment variable 'RC_TLS_LEGACY_RENEGOTIATION_ALLOWED=true'
+
+Usage: .\ssl-setup.ps1 [-DryRun] [-Overwrite] [-Help]
+"@
+
+if ($Help) {
+    Write-Host $documentation
+    Exit(0)
+}
+
+
+# The base script:
 # - Detect if the outcome of the script exists
 # - If overwrite of not run will execute
 # - Overwriting will do full clear and normal execution
