@@ -5,7 +5,7 @@ if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 }
 
 # Define the file path
-$opensslConfigPath = Join-Path -Path $env:ProgramData -ChildPath "openssl\openssl.cnf"
+$opensslConfigPath = Join-Path -Path $env:ProgramData -ChildPath "robocorp-openssl\openssl.cnf"
 
 # Check if openssl.cnf file exists and delete it
 if (Test-Path -Path $opensslConfigPath) {
