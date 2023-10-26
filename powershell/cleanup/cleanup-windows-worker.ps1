@@ -2,8 +2,8 @@
 # title: Remove Windows Worker
 # description: Running several atomic scripts that would remove the Windows Service & Scheduled task
 # requirements: User needs to be an admin
+# os: windows
 # category: Worker
-# system: windows
 # type: recipe
 # ---
 
