@@ -1,201 +1,86 @@
-                                 Apache License
-                           Version 2.0, January 2004
-                        http://www.apache.org/licenses/
+Robocorp End User License Agreement
+Version 1.0
+Effective Date: April 1, 2020
+Last Updated Date: April 1, 2020
 
-   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+IMPORTANT - PLEASE READ THE TERMS OF THIS ROBOCORP END-USER LICENSE AGREEMENT (THE "EULA") CAREFULLY.  THIS EULA IS A BINDING, CONTRACTUAL AGREEMENT BETWEEN YOU AND ROBOCORP TECHNOLOGIES, INC. ("ROBOCORP") AND APPLIES TO YOUR USE OF ROBOCORP'S DOWNLOADABLE SOFTWARE, INCLUDING ALL ENHANCEMENTS, VERSIONS, AND MODIFICATIONS TO THE FOREGOING (THE "SOFTWARE"). THIS EULA, AND YOUR USE OF THE ROBOCORP SERVICES, ARE ALSO SUBJECT TO THE ROBOCORP TERMS OF USE. BY ACCEPTING THE TERMS OF THIS EULA, YOU ALSO ACKNOWLEDGE AND AGREE THAT YOU ACCEPT AND AGREE TO BE BOUND BY THE TERMS OF USE.
 
-   1. Definitions.
+BY CLICKING THE BUTTON BELOW LABELED "YES, I AGREE," BY INSTALLING OR USING THE SOFTWARE, YOU ARE INDICATING YOUR ACCEPTANCE AND AGREEING TO ALL THE TERMS AND CONDITIONS OF THIS EULA.  IF YOU DO NOT ACCEPT AND AGREE TO ALL OF THE FOLLOWING TERMS AND CONDITIONS, YOU MUST CLICK THE BUTTON LABELED "NO, I DO NOT AGREE," IN WHICH CASE YOU WILL NOT BE PERMITTED TO USE THE SOFTWARE.  YOUR CLICKING ON THE "YES, I AGREE" BUTTON CONSTITUTES YOUR ELECTRONIC SIGNATURE ON THIS EULA AND YOUR CONSENT TO EXECUTE THIS EULA ELECTRONICALLY.  
 
-      "License" shall mean the terms and conditions for use, reproduction,
-      and distribution as defined by Sections 1 through 9 of this document.
+BY ACCEPTING THE EULA AS DESCRIBED ABOVE, YOU (1) ACKNOWLEDGE THAT YOU HAVE READ, UNDERSTAND, AND AGREE TO BE BOUND BY THIS EULA; (2) REPRESENT THAT YOU OF LEGAL AGE TO FORM A BINDING CONTRACT; AND (3) REPRESENT THAT YOU HAVE THE AUTHORITY TO ENTER INTO THIS EULA PERSONALLY. ONLY INDIVIDUALS MAY ENTER INTO THIS EULA..  IF YOU DO NOT AGREE TO ALL TERMS AND CONDITIONS OF THIS EULA, OR IF YOU DO NOT HAVE SUCH AUTHORITY, YOU MUST NOT ACCEPT THIS EULA OR ACCESS, USE OR INSTALL THE SOFTWARE.
 
-      "Licensor" shall mean the copyright owner or entity authorized by
-      the copyright owner that is granting the License.
+PLEASE NOTE THAT THIS EULA IS SUBJECT TO CHANGE BY ROBOCORP IN ITS SOLE DISCRETION AT ANY TIME. When changes are made, Robocorp will make a new copy of the EULA available in the Software. We will also update the "Last Updated" date at the top of this EULA. Robocorp may require you to provide consent to the updated EULA in a specified manner before further use of the Software is permitted.
+ 
+Our goal is to provide helpful and accurate information through the Software, but we make no endorsement, representation or warranty of any kind about any information displayed therein. We are not responsible for the accuracy, reliability, effectiveness, or correct use of information you receive through the Software. If you rely on any such information, you do so solely at your own risk. 
 
-      "Legal Entity" shall mean the union of the acting entity and all
-      other entities that control, are controlled by, or are under common
-      control with that entity. For the purposes of this definition,
-      "control" means (i) the power, direct or indirect, to cause the
-      direction or management of such entity, whether by contract or
-      otherwise, or (ii) ownership of fifty percent (50%) or more of the
-      outstanding shares, or (iii) beneficial ownership of such entity.
+1. Software. 
 
-      "You" (or "Your") shall mean an individual or Legal Entity
-      exercising permissions granted by this License.
+1.1 License. Subject to your compliance with this EULA, Robocorp grants you a limited non-exclusive, non-transferable, non-sublicensable, revocable license to download, install and use a copy of the Software on a computer that you own or control and to run such copy of the Software solely for your personal or non-commercial internal business use. 
 
-      "Source" form shall mean the preferred form for making modifications,
-      including but not limited to software source code, documentation
-      source, and configuration files.
+1.2 Open-Source Software.  Certain software code incorporated into or distributed with the Software may be licensed by third parties under various "open-source" or "public-source" software licenses (such as the Apache License) (collectively, the "Open Source Software").  Notwithstanding anything to the contrary in this EULA, the Open Source Software is not licensed under Section 1.1 and instead is separately licensed pursuant to the terms and conditions of their respective open-source software licenses.  You agree to comply with the terms and conditions of such open-source software license agreements.
 
-      "Object" form shall mean any form resulting from mechanical
-      transformation or translation of a Source form, including but
-      not limited to compiled object code, generated documentation,
-      and conversions to other media types.
+1.3 Data. In addition to the data displayed through the Software, the Software may, from time to time, automatically report back information to Robocorp's servers related to usage of the Software, without notice to you ("Usage Data"). Usage Data may be used by Robocorp in compliance with all applicable laws, including helping diagnose and resolve technical and performance issues in relation to the Software. By using the Software, you hereby to such collection, transmission, and use of data and agree to get all necessary consents from any Authorized User and/or patient for such contemplated usage.
 
-      "Work" shall mean the work of authorship, whether in Source or
-      Object form, made available under the License, as indicated by a
-      copyright notice that is included in or attached to the work
-      (an example is provided in the Appendix below).
+1.4 Ownership. You agree that Robocorp and its suppliers own all rights, title and interest in the Software. You will not remove, alter or obscure any copyright, trademark, service mark or other proprietary rights notices incorporated in or accompanying the Software.
 
-      "Derivative Works" shall mean any work, whether in Source or Object
-      form, that is based on (or derived from) the Work and for which the
-      editorial revisions, annotations, elaborations, or other modifications
-      represent, as a whole, an original work of authorship. For the purposes
-      of this License, Derivative Works shall not include works that remain
-      separable from, or merely link (or bind by name) to the interfaces of,
-      the Work and Derivative Works thereof.
+2. Use of the Software. 
+       
+2.1 Updates. Robocorp may require you to accept updates to the Software that you have installed on your computer. You acknowledge and agree that Robocorp may update the Software with or without notifying you. You may need to update third party software from time to time in order to use the Software.
+       
+2.2 Certain Restrictions. As a condition of use, you agree not to use the Software for any purpose that is prohibited by the EULA or by applicable law. You shall not (and shall not permit any third party): (a) license, sell, rent, lease, transfer, assign, reproduce, distribute, host or otherwise commercially exploit the Software, (b) modify, translate, adapt, merge, make derivative works of, disassemble, decompile, reverse compile or reverse engineer any part of the Software except to the extent the foregoing restrictions are expressly prohibited by applicable law; (c) interfere with or attempt to interfere with the proper functioning of the Software; (d) attempt to engage in or engage in, any potentially harmful acts that are directed against the Software or Robocorp, including but not limited to violating or attempting to violate any security features of the Software; or (e) access the Software in order to build a similar or competitive website, Software or service. Any future release, update or other addition to the Software shall be subject to this EULA. Robocorp, its suppliers and service providers reserve all rights not granted in this EULA.  Any unauthorized use of the Software terminates the licenses granted by Robocorp pursuant to this EULA.
 
-      "Contribution" shall mean any work of authorship, including
-      the original version of the Work and any modifications or additions
-      to that Work or Derivative Works thereof, that is intentionally
-      submitted to Licensor for inclusion in the Work by the copyright owner
-      or by an individual or Legal Entity authorized to submit on behalf of
-      the copyright owner. For the purposes of this definition, "submitted"
-      means any form of electronic, verbal, or written communication sent
-      to the Licensor or its representatives, including but not limited to
-      communication on electronic mailing lists, source code control systems,
-      and issue tracking systems that are managed by, or on behalf of, the
-      Licensor for the purpose of discussing and improving the Work, but
-      excluding communication that is conspicuously marked or otherwise
-      designated in writing by the copyright owner as "Not a Contribution."
+3. Registration.
+       
+3.1 Accounts. In order to download and use the Software, you may be required to register an account with Robocorp. You acknowledge and agree that you are bound by the Terms of Use with respect to such account and your access to any other services made available by Robocorp.
+       
+3.2 Necessary Equipment. You must provide all equipment and software necessary to connect to the Software, including but not limited to, a computer that is suitable to use the Software. You are solely responsible for any fees, including Internet connection or mobile fees, that you incur when accessing or using the Software. 
+       
+3.3 Feedback. You agree that submission of any ideas, suggestions, documents, and/or proposals to Robocorp through its suggestion, feedback, wiki, forum or similar pages ("Feedback") is at your own risk and that Robocorp has no obligations (including without limitation obligations of confidentiality) with respect to such Feedback. You represent and warrant that you have all rights necessary to submit the Feedback. You hereby grant to Robocorp a fully paid, royalty-free, perpetual, irrevocable, worldwide, non-exclusive, and fully sublicensable right and license to use, reproduce, perform, display, distribute, adapt, modify, re-format, create derivative works of, and otherwise commercially or non-commercially exploit in any manner, any and all Feedback, and to sublicense the foregoing rights, in connection with the operation and maintenance of the Software.
 
-      "Contributor" shall mean Licensor and any individual or Legal Entity
-      on behalf of whom a Contribution has been received by Licensor and
-      subsequently incorporated within the Work.
+4. Indemnification. You agree to indemnify and hold Robocorp and its parents, subsidiaries, affiliates, officers, employees, agents, partners and licensors (collectively, the "Robocorp Parties") harmless from any losses, costs, liabilities and expenses (including reasonable attorneys' fees) relating to or arising out of: (a) any data you submit to or through the Software; (b) your use of, or inability to use, the Software; (c) your violation of this EULA; (d) your violation of any rights of another party, or (e) your violation of any applicable laws, rules or regulations. Robocorp reserves the right, at its own cost, to assume the exclusive defense and control of any matter otherwise subject to indemnification by you, in which event you will fully cooperate with Robocorp in asserting any available defenses. You agree that the provisions in this section will survive any termination of this EULA.
 
-   2. Grant of Copyright License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      copyright license to reproduce, prepare Derivative Works of,
-      publicly display, publicly perform, sublicense, and distribute the
-      Work and such Derivative Works in Source or Object form.
+5. Disclaimer of Warranties.
+       
+5.1 AS IS. YOU EXPRESSLY UNDERSTAND AND AGREE THAT TO THE EXTENT PERMITTED BY APPLICABLE LAW, YOUR USE OF THE SOFTWARE IS AT YOUR SOLE RISK, AND THE SOFTWARE IS PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS, WITH ALL FAULTS. THE ROBOCORP PARTIES EXPRESSLY DISCLAIM ALL WARRANTIES, REPRESENTATIONS, AND CONDITIONS OF ANY KIND, WHETHER EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OR CONDITIONS OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. THE ROBOCORP PARTIES MAKE NO WARRANTY, REPRESENTATION OR CONDITION THAT: (1) THE SOFTWARE WILL MEET YOUR REQUIREMENTS; (2) THE SOFTWARE WILL BE UNINTERRUPTED, TIMELY, SECURE OR ERROR-FREE; (3) THE RESULTS THAT MAY BE OBTAINED FROM USE OF THE SOFTWARE WILL BE ACCURATE OR RELIABLE; OR (4) ANY ERRORS IN THE SOFTWARE WILL BE CORRECTED. THE SOFTWARE MAY BE SUBJECT TO DELAYS, CANCELLATIONS AND OTHER DISRUPTIONS. THE ROBOCORP PARTIES ASSUME NO RESPONSIBILITY FOR THE TIMELINESS, DELETION, MIS-DELIVERY OR FAILURE TO STORE ANY DATA THROUGH THE SOFTWARE. 
 
-   3. Grant of Patent License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      (except as stated in this section) patent license to make, have made,
-      use, offer to sell, sell, import, and otherwise transfer the Work,
-      where such license applies only to those patent claims licensable
-      by such Contributor that are necessarily infringed by their
-      Contribution(s) alone or by combination of their Contribution(s)
-      with the Work to which such Contribution(s) was submitted. If You
-      institute patent litigation against any entity (including a
-      cross-claim or counterclaim in a lawsuit) alleging that the Work
-      or a Contribution incorporated within the Work constitutes direct
-      or contributory patent infringement, then any patent licenses
-      granted to You under this License for that Work shall terminate
-      as of the date such litigation is filed.
+6. Limitation of Liability.
+       
+6.1 DISCLAIMER OF CERTAIN DAMAGES. YOU UNDERSTAND AND AGREE THAT IN NO EVENT SHALL ROBOCORP PARTIES BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES ARISING OUT OF OR IN CONNECTION WITH THE SOFTWARE, INCLUDING, WITHOUT LIMITATION, ANY DAMAGES RESULTING FROM LOSS OF USE, DATA, OR PROFITS, WHETHER OR NOT ROBOCORP HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR FOR ANY DAMAGES FOR PERSONAL OR BODILY INJURY OR EMOTIONAL DISTRESS ARISING OUT OF OR IN CONNECTION WITH THIS EULA, ON ANY THEORY OF LIABILITY, RESULTING FROM: (1) THE USE OR INABILITY TO USE THE SOFTWARE; (2) DATA YOU SUBMIT THROUGH THE SOFTWARE; (3) UNAUTHORIZED ACCESS TO OR ALTERATION OF YOUR TRANSMISSIONS OR DATA; OR (4) ANY OTHER MATTER RELATED TO THE SOFTWARE.
+       
+6.2 CAP ON LIABILITY. UNDER NO CIRCUMSTANCES WILL THE ROBOCORP PARTIES BE LIABLE TO YOU IN THE AGGREGATE FOR MORE THAN TEN DOLLARS ($10.00). 
+       
+6.3 BASIS OF THE BARGAIN. THE LIMITATIONS OF DAMAGES SET FORTH ABOVE ARE FUNDAMENTAL ELEMENTS OF THE BASIS OF THE BARGAIN BETWEEN ROBOCORP AND YOU. 
 
-   4. Redistribution. You may reproduce and distribute copies of the
-      Work or Derivative Works thereof in any medium, with or without
-      modifications, and in Source or Object form, provided that You
-      meet the following conditions:
+7. Term and Termination. 
+       
+7.1 Term. This EULA will commence on the date when you accept it (as described in the preamble above) and remain in full force and effect until terminated in accordance with this Section 7.
+       
+7.2 Termination by Robocorp. If you have breached any provision of this EULA or Robocorp suspects that you have breached any provision of this EULA, or if Robocorp is required to do so by law (e.g., where the provision of the Software, or your use of the Software, is, or becomes, unlawful), Robocorp has the right to suspend or terminate any services provided to you. You agree that all terminations for cause shall be made in Robocorp's sole discretion and that Robocorp shall not be liable to you or any third party for any termination of your Account. In addition, the provision of certain functionality provided by Robocorp through the Software will automatically terminate if you no longer use or have access to the Equipment.
+       
+7.3 Termination by You. If you want to terminate any services provided by Robocorp through the Software, you may do so by deleting the Software. 
+       
+7.4 Effect of Termination. Robocorp will not have any liability whatsoever to you for any suspension or termination. All provisions of this EULA which by their nature should survive, shall survive termination of this EULA, including without limitation, ownership provisions, warranty disclaimers, and limitation of liability.
 
-      (a) You must give any other recipients of the Work or
-          Derivative Works a copy of this License; and
-
-      (b) You must cause any modified files to carry prominent notices
-          stating that You changed the files; and
-
-      (c) You must retain, in the Source form of any Derivative Works
-          that You distribute, all copyright, patent, trademark, and
-          attribution notices from the Source form of the Work,
-          excluding those notices that do not pertain to any part of
-          the Derivative Works; and
-
-      (d) If the Work includes a "NOTICE" text file as part of its
-          distribution, then any Derivative Works that You distribute must
-          include a readable copy of the attribution notices contained
-          within such NOTICE file, excluding those notices that do not
-          pertain to any part of the Derivative Works, in at least one
-          of the following places: within a NOTICE text file distributed
-          as part of the Derivative Works; within the Source form or
-          documentation, if provided along with the Derivative Works; or,
-          within a display generated by the Derivative Works, if and
-          wherever such third-party notices normally appear. The contents
-          of the NOTICE file are for informational purposes only and
-          do not modify the License. You may add Your own attribution
-          notices within Derivative Works that You distribute, alongside
-          or as an addendum to the NOTICE text from the Work, provided
-          that such additional attribution notices cannot be construed
-          as modifying the License.
-
-      You may add Your own copyright statement to Your modifications and
-      may provide additional or different license terms and conditions
-      for use, reproduction, or distribution of Your modifications, or
-      for any such Derivative Works as a whole, provided Your use,
-      reproduction, and distribution of the Work otherwise complies with
-      the conditions stated in this License.
-
-   5. Submission of Contributions. Unless You explicitly state otherwise,
-      any Contribution intentionally submitted for inclusion in the Work
-      by You to the Licensor shall be under the terms and conditions of
-      this License, without any additional terms or conditions.
-      Notwithstanding the above, nothing herein shall supersede or modify
-      the terms of any separate license agreement you may have executed
-      with Licensor regarding such Contributions.
-
-   6. Trademarks. This License does not grant permission to use the trade
-      names, trademarks, service marks, or product names of the Licensor,
-      except as required for reasonable and customary use in describing the
-      origin of the Work and reproducing the content of the NOTICE file.
-
-   7. Disclaimer of Warranty. Unless required by applicable law or
-      agreed to in writing, Licensor provides the Work (and each
-      Contributor provides its Contributions) on an "AS IS" BASIS,
-      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-      implied, including, without limitation, any warranties or conditions
-      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
-      PARTICULAR PURPOSE. You are solely responsible for determining the
-      appropriateness of using or redistributing the Work and assume any
-      risks associated with Your exercise of permissions under this License.
-
-   8. Limitation of Liability. In no event and under no legal theory,
-      whether in tort (including negligence), contract, or otherwise,
-      unless required by applicable law (such as deliberate and grossly
-      negligent acts) or agreed to in writing, shall any Contributor be
-      liable to You for damages, including any direct, indirect, special,
-      incidental, or consequential damages of any character arising as a
-      result of this License or out of the use or inability to use the
-      Work (including but not limited to damages for loss of goodwill,
-      work stoppage, computer failure or malfunction, or any and all
-      other commercial damages or losses), even if such Contributor
-      has been advised of the possibility of such damages.
-
-   9. Accepting Warranty or Additional Liability. While redistributing
-      the Work or Derivative Works thereof, You may choose to offer,
-      and charge a fee for, acceptance of support, warranty, indemnity,
-      or other liability obligations and/or rights consistent with this
-      License. However, in accepting such obligations, You may act only
-      on Your own behalf and on Your sole responsibility, not on behalf
-      of any other Contributor, and only if You agree to indemnify,
-      defend, and hold each Contributor harmless for any liability
-      incurred by, or claims asserted against, such Contributor by reason
-      of your accepting any such warranty or additional liability.
-
-   END OF TERMS AND CONDITIONS
-
-   APPENDIX: How to apply the Apache License to your work.
-
-      To apply the Apache License to your work, attach the following
-      boilerplate notice, with the fields enclosed by brackets "[]"
-      replaced with your own identifying information. (Don't include
-      the brackets!)  The text should be enclosed in the appropriate
-      comment syntax for the file format. We also recommend that a
-      file or class name and description of purpose be included on the
-      same "printed page" as the copyright notice for easier
-      identification within third-party archives.
-
-   Copyright 2023 Robocorp Technologies, Inc.
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+8. General Provisions.
+       
+8.1 Electronic Communications. The communications between you and Robocorp use electronic means. For contractual purposes, you (1) consent to receive communications from Robocorp in an electronic form; and (2) agree that all terms and conditions, agreements, notices, disclosures, and other communications that Robocorp provides to you electronically satisfy any legal requirement that such communications would satisfy if it were to be in writing. The foregoing does not affect your statutory rights.
+       
+8.2 Release. You hereby release the Robocorp Parties and their successors from claims, demands, any and all losses, damages, rights, and actions of any kind, including personal injuries, death, and property damage that is either directly or indirectly related to or arises out of the Software or your use thereof. If you are a California resident, you hereby waive California Civil Code Section 1542, which states, "A general release does not extend to claims which the creditor does not know or suspect to exist in his favor at the time of executing the release, which, if known by him must have materially affected his settlement with the debtor.
+       
+8.3 Assignment. This EULA, and your rights and obligations hereunder, may not be assigned, subcontracted, delegated, or otherwise transferred by you without Robocorp's prior written consent, and any attempted assignment, subcontract, delegation, or transfer in violation of the foregoing will be null and void.
+       
+8.4 Force Majeure. Robocorp shall not be liable for any delay or failure to perform resulting from causes outside its reasonable control, including, but not limited to, acts of God, war, terrorism, riots, embargos, acts of civil or military authorities, fire, floods, accidents, strikes or shortages of transportation facilities, fuel, energy, labor or materials.
+       
+8.5 Dispute Resolution. If you believe that Robocorp has not adhered to this EULA, please contact Robocorp by emailing us at support@robocorp.com. We will do our best to address your concerns. If you feel that your complaint has been addressed incompletely, we invite you to let us know for further investigation. Any dispute arising from this EULA shall be resolved in accordance with the dispute resolution provisions in the Terms of Use.
+       
+8.6 Limitations Period. YOU AND ROBOCORP AGREE THAT ANY CAUSE OF ACTION ARISING OUT OF OR RELATED TO THIS EULA MUST COMMENCE WITHIN ONE (1) YEAR AFTER THE CAUSE OF ACTION ACCRUES. OTHERWISE, SUCH CAUSE OF ACTION IS PERMANENTLY BARRED.
+       
+8.7 Notice. Where Robocorp requires that you provide an e-mail address, you are responsible for providing Robocorp with your most current e-mail address. In the event that the last e-mail address you provided to Robocorp is not valid, or for any reason is not capable of delivering to you any notices required/ permitted by this EULA, Robocorp's dispatch of the e-mail containing such notice will nonetheless constitute effective notice. You may give notice to Robocorp at support@robocorp.com.
+       
+8.8 Waiver. Any waiver or failure to enforce any provision of this EULA on one occasion will not be deemed a waiver of any other provision or of such provision on any other occasion.
+       
+8.9 Severability. If any provision of this EULA is, for any reason, held to be invalid or unenforceable, the other provisions of this EULA will remain enforceable, and the invalid or unenforceable provision will be deemed modified so that it is valid and enforceable to the maximum extent permitted by law.
+       
+8.10 Export Control. You may not use, export, import, or transfer the Software except as authorized by U.S. law, the laws of the jurisdiction in which you obtained the Software, and any other applicable laws. In particular, but without limitation, the Software may not be exported or re-exported (a) into any United States embargoed countries; or (b) to anyone on the U.S. Treasury Department's list of Specially Designated Nationals or the U.S. Department of Commerce's Denied Person's List or Entity List. By using the Software, you represent and warrant that (i) you are not located in a country that is subject to a U.S. Government embargo, or that has been designated by the U.S. Government as a "terrorist supporting" country and (ii) you are not listed on any U.S. Government list of prohibited or restricted parties. You also will not use the Software for any purpose prohibited by U.S. law, including the development, design, manufacture or production of missiles, nuclear, chemical or biological weapons. You acknowledge and agree that products, services or technology provided by Robocorp are subject to the export control laws and regulations of the United States. You shall comply with these laws and regulations and shall not, without prior U.S. government authorization, export, re-export, or transfer Robocorp products, services or technology, either directly or indirectly, to any country in violation of such laws and regulations.
+       
+8.11 Entire Agreement. This EULA is the final, complete and exclusive agreement of the parties with respect to the subject matter hereof and supersedes and merges all prior discussions between the parties with respect to such subject matter.

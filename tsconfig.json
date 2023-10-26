@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "lib": ["es5", "es6", "dom", "es2015", "esnext.asynciterable"],
+    "module": "commonJS",
+    "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": "lib",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "ES2017",
+    "baseUrl": "./",
+    "paths": {
+      "@root/*": ["src/*"],
+      "@agent/*": ["src/agentCore/*"],
+      "@service/*": ["src/service/*"],
+      "@commands": ["src/commands/"],
+      "@utils/*": ["src/utils/*"],
+      "@rdp/*": ["src/rdp/*"],
+      "@process/*": ["src/processHandler"],
+      "@config/*": ["src/config/*"],
+      "@rcc": ["src/rcc"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

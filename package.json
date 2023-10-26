@@ -1,0 +1,55 @@
+{
+  "name": "roboit",
+  "version": "0.0.1",
+  "description": "This repository contains tools and scripts needed by IT organizations that are using different fleet management tools.",
+  "author": {
+    "name": "Robocorp",
+    "email": "dev@robocorp.com",
+    "url": "https://robocorp.com"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "main": "index.js",
+  "bin": {
+    "roboit": "./lib/cli.js"
+  },
+  "pkg": {
+    "scripts": "./lib/**/*.js",
+    "outputPath": "release",
+    "assets": [
+      "./lib/powershell/**/*"
+    ]
+  },
+  "scripts": {
+    "clean": "yarn rimraf lib dist release",
+    "build": "npm-run-all clean build:app build:assets",
+    "build:app": "npx tsc && npx tsc-alias",
+    "build:assets": "cp -R ./powershell ./lib/",
+    "test": "yarn run test:types && jest --runInBand",
+    "test:lint": "eslint --ext .tsx,.ts --max-warnings 0 .",
+    "test:types": "tsc --noEmit",
+    "test:prettier": "prettier --check src/",
+    "fix": "npm-run-all fix:prettier fix:lint",
+    "fix:prettier": "prettier --write src/ ",
+    "fix:lint": "eslint --fix --ext .tsx,.ts .",
+    "dev": "NODE_ENV=development npx ts-node src/cli.ts",
+    "exe": "yarn clean && yarn build && yarn pkg .",
+    "watch": "tsc --watch"
+  },
+  "engines": {
+    "node": ">=18.17"
+  },
+  "engineStrict": true,
+  "dependencies": {
+    "prompts": "^2.4.2"
+  },
+  "devDependencies": {
+    "@types/prompts": "^2.4.7",
+    "copyfiles": "^2.4.1",
+    "npm-run-all": "^4.1.5",
+    "pkg": "^5.8.1",
+    "prettier": "^3.0.3",
+    "rimraf": "^5.0.5",
+    "tsc-alias": "^1.8.8",
+    "typescript": "^5.2.2"
+  }
+}
