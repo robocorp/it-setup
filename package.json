@@ -11,20 +11,21 @@
   "license": "SEE LICENSE IN LICENSE",
   "main": "index.js",
   "bin": {
-    "roboit": "./lib/cli.js"
+    "roboit": "./lib/src/cli.js"
   },
   "pkg": {
     "scripts": "./lib/**/*.js",
     "outputPath": "release",
     "assets": [
-      "./lib/powershell/**/*"
+      "./lib/powershell/**/*",
+      "./node_modules/figlet/fonts/3D-ASCII.flf"
     ]
   },
   "scripts": {
     "clean": "yarn rimraf lib dist release",
     "build": "npm-run-all clean build:app build:assets",
     "build:app": "npx tsc && npx tsc-alias",
-    "build:assets": "cp -R ./powershell ./lib/",
+    "build:assets": "cp -R ./package.json ./powershell ./lib/",
     "test": "yarn run test:types && jest --runInBand",
     "test:lint": "eslint --ext .tsx,.ts --max-warnings 0 .",
     "test:types": "tsc --noEmit",
@@ -42,9 +43,13 @@
   "engineStrict": true,
   "dependencies": {
     "chalk": "4.1.2",
+    "easy-table": "^1.2.0",
+    "figlet": "^1.7.0",
+    "nanospinner": "^1.1.0",
     "prompts": "^2.4.2"
   },
   "devDependencies": {
+    "@types/figlet": "^1.5.7",
     "@types/prompts": "^2.4.7",
     "copyfiles": "^2.4.1",
     "npm-run-all": "^4.1.5",

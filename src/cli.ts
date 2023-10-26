@@ -1,22 +1,32 @@
-import prompts from 'prompts';
+import figlet from 'figlet';
 import { scriptsDB } from './db/scriptsDB';
 
+import * as packageJSON from '../package.json';
+import chalk from 'chalk';
+import { createSpinner } from 'nanospinner';
+import { sleep } from './utils';
+import { inquirer } from './inquirer/inquirer';
+
 (async () => {
-  // const dir = fs.readdirSync(path.resolve(__dirname));
-  // console.log(dir);
+  console.log(
+    chalk.magentaBright(
+      figlet.textSync(`roboit - ${packageJSON.version}`, {
+        font: '3D-ASCII',
+        horizontalLayout: 'default',
+        verticalLayout: 'default',
+      }),
+    ),
+  );
 
-  // const pathToPowershell = path.join(__dirname, 'powershell', 'cleanup', 'cleanup-windows-worker.ps1');
-  // const fileBuffer = fs.readFileSync(pathToPowershell);
-  // console.log('FILE CONTENTS:', fileBuffer.toString());
-
+  const spinner = createSpinner('Gathering ingredients...').start();
   scriptsDB.walk();
 
-  const response = await prompts({
-    type: 'number',
-    name: 'value',
-    message: 'Quick question... How old are you?',
-    validate: (value) => (value < 18 ? `Nightclub is 18+ only` : true),
-  });
+  await sleep(1000);
+  if (scriptsDB.isEmpty()) {
+    spinner.error({ text: 'Fridge is empty! Try and debug the issue if you dare.' });
+    process.exit(1);
+  }
 
-  console.log(response); // => { value: 24 }
+  spinner.success({ text: 'Your chef is ready to go! 🧑‍🍳' });
+  inquirer.start();
 })();

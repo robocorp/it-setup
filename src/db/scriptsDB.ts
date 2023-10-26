@@ -4,6 +4,8 @@ import { extractScriptData, getAllFilePathsInDirectory, isScriptCompatible } fro
 import { ScriptDBType } from '../types';
 import { getLogger } from '../log';
 
+const logger = getLogger({ prefix: 'scriptDB' });
+
 /* Script Data example
 # ---
 # title: Remove Windows Worker
@@ -14,8 +16,6 @@ import { getLogger } from '../log';
 # type: recipe
 # ---
 */
-
-const logger = getLogger({ prefix: 'scriptDB' });
 
 class ScriptsDB {
   _db: ScriptDBType = {};
@@ -57,6 +57,14 @@ class ScriptsDB {
 
     logger.warn('Script DB is:', JSON.stringify(scriptsDB, undefined, 4));
   };
+
+  isEmpty = () => Object.keys(this._db).length === 0;
+
+  recipes = () => Object.keys(this._db).filter((k) => this._db[k].type !== undefined && this._db[k].type === 'recipe');
+
+  get = (k: string) => this._db[k];
+
+  at = (i: number) => this._db[i];
 }
 
 export const scriptsDB = new ScriptsDB();
