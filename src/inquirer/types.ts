@@ -1,5 +1,12 @@
+import { Choice } from 'prompts';
+
+export interface InternalChoice extends Choice {
+  path?: string;
+}
+
 export const enum Choices {
   EXIT = 'exit',
-  LIST_RECIPES = 'list_recipes',
-  LIST_INGREDIENTS = 'list_ingredients',
+  LIST_ALL = 'list_all',
+  SELECT_RECIPE = 'select_recipes',
+  SELECT_INGREDIENT = 'select_ingredients',
 }

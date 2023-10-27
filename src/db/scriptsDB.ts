@@ -1,3 +1,4 @@
+import os from 'os';
 import fs from 'fs';
 import path from 'path';
 import { extractScriptData, getAllFilePathsInDirectory, isScriptCompatible } from './utils';
@@ -19,52 +20,76 @@ const logger = getLogger({ prefix: 'scriptDB' });
 
 class ScriptsDB {
   _db: ScriptDBType = {};
-  _source: string = '';
+  _sources: string[] = [];
 
   constructor() {
     logger.debug('NODE_ENV:', process.env['NODE_ENV']);
     logger.debug('SOURCE DEV:', __dirname);
     logger.debug('SOURCE PRD:', path.join(__dirname, '../'));
-    this._source =
-      process.env['NODE_ENV'] === 'development'
-        ? path.join(__dirname, '..', '..', 'powershell')
-        : path.join(__dirname, '../');
+    if (process.env['NODE_ENV'] === 'development') {
+      this._sources.push(path.join(__dirname, '..', '..', 'powershell'));
+      this._sources.push(path.join(__dirname, '..', '..', 'bash'));
+    } else {
+      this._sources.push(path.join(__dirname, '..', '..', 'powershell'));
+      this._sources.push(path.join(__dirname, '..', '..', 'bash'));
+    }
   }
 
   walk = () => {
     // this._ensureSource();
     // get the current directory - this is where the executable is executing :)
-    logger.info('Talking a walk in:', this._source);
-    const allScripts: string[] = [];
-    getAllFilePathsInDirectory(this._source, allScripts);
+    for (const source of this._sources) {
+      logger.info('Talking a walk in:', source);
+      const allScripts: string[] = [];
+      getAllFilePathsInDirectory(source, allScripts);
 
-    logger.info('Gathering scripts data...');
-    allScripts?.forEach((scriptPath) => {
-      const fileBuffer = fs.readFileSync(scriptPath);
-      const isCompatibleData = isScriptCompatible(fileBuffer.toString())?.[0];
-      logger.debug('Compatible data:', isCompatibleData);
-      if (isCompatibleData) {
-        const scriptData = extractScriptData(isCompatibleData);
-        if (scriptData) {
-          this._db[scriptPath] = scriptData;
+      logger.info('Gathering scripts data...');
+      allScripts?.forEach((scriptPath) => {
+        const fileBuffer = fs.readFileSync(scriptPath);
+        const isCompatibleData = isScriptCompatible(fileBuffer.toString())?.[0];
+        logger.debug('Compatible data:', isCompatibleData);
+        if (isCompatibleData) {
+          const scriptData = extractScriptData(isCompatibleData);
+          if (scriptData) {
+            this._db[scriptPath] = scriptData;
+          } else {
+            logger.error('Template did not match:', scriptPath);
+          }
         } else {
-          logger.error('Template did not match:', scriptPath);
+          logger.error('Script found incompatible with template:', scriptPath);
         }
-      } else {
-        logger.error('Script found incompatible with template:', scriptPath);
-      }
-    });
+      });
+    }
 
     logger.warn('Script DB is:', JSON.stringify(scriptsDB, undefined, 4));
   };
 
-  isEmpty = () => Object.keys(this._db).length === 0;
+  isSupported = (k: string): boolean => {
+    const data = this.get(k);
+    if (data.os) {
+      switch (os.platform()) {
+        case 'win32':
+          return data.os === 'windows';
+        case 'darwin':
+          return data.os === 'darwin';
+        case 'linux':
+          return data.os === 'linux';
+      }
+    }
+    return false;
+  };
 
-  recipes = () => Object.keys(this._db).filter((k) => this._db[k].type !== undefined && this._db[k].type === 'recipe');
+  isEmpty = () => Object.keys(this._db).length === 0;
 
   get = (k: string) => this._db[k];
 
-  at = (i: number) => this._db[i];
+  recipes = () => Object.keys(this._db).filter((k) => this._db[k].type !== undefined && this._db[k].type === 'recipe');
+  ingredients = () =>
+    Object.keys(this._db).filter((k) => this._db[k].type !== undefined && this._db[k].type === 'ingredient');
+
+  keys = () => Object.keys(this._db);
+  values = () => Object.values(this._db);
+  entries = () => Object.entries(this._db);
 }
 
 export const scriptsDB = new ScriptsDB();

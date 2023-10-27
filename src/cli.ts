@@ -18,7 +18,7 @@ import { inquirer } from './inquirer/inquirer';
     ),
   );
 
-  const spinner = createSpinner('Gathering ingredients...').start();
+  const spinner = createSpinner('Searching the fridge...').start();
   scriptsDB.walk();
 
   await sleep(1000);
@@ -26,7 +26,6 @@ import { inquirer } from './inquirer/inquirer';
     spinner.error({ text: 'Fridge is empty! Try and debug the issue if you dare.' });
     process.exit(1);
   }
-
   spinner.success({ text: 'Your chef is ready to go! 🧑‍🍳' });
   inquirer.start();
 })();
