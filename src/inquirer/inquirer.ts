@@ -1,9 +1,11 @@
 import prompts from 'prompts';
 import Table from 'easy-table';
 
+const PromptSort = require('prompt-sort');
+
 import { Choices, InternalChoice } from './types';
 import { scriptsDB } from '../db/scriptsDB';
-import { ScriptDataType } from '../types';
+import { ScriptDataType, ScriptType } from '../types';
 
 import { getLogger } from '../log';
 import { BashExe } from '../executor/bashExe';
@@ -39,8 +41,12 @@ class Inquirer {
           description: 'List all available Recipes & Ingredients',
           value: Choices.LIST_ALL,
         },
-        { title: 'Select Recipe', description: 'Select Recipe to cook', value: Choices.SELECT_RECIPE },
-        { title: 'Select Ingredient', description: 'Select Ingredients to cook', value: Choices.SELECT_INGREDIENT },
+        { title: 'Select recipe(s)', description: 'Select recipe(s) to cook', value: Choices.SELECT_RECIPE },
+        {
+          title: 'Select ingredient(s)',
+          description: 'Select ingredient(s) to cook',
+          value: Choices.SELECT_INGREDIENT,
+        },
         { title: 'Exit', description: 'Cook another day', value: Choices.EXIT },
       ],
     });
@@ -105,7 +111,13 @@ class Inquirer {
 
     if (choices.length === 0) {
       choices = [
-        { title: 'No available recipes', description: 'Walk back to the previous screen', disabled: true, value: 999 },
+        {
+          title: 'No available recipes',
+          description: 'Walk back to the previous screen',
+          disabled: true,
+          value: 999,
+          path: '',
+        },
       ];
     }
 
@@ -144,6 +156,7 @@ class Inquirer {
           description: 'Walk back to the previous screen',
           disabled: true,
           value: 999,
+          path: '',
         },
       ];
     }
@@ -152,10 +165,18 @@ class Inquirer {
       type: 'select',
       name: 'value',
       message: 'Choose your ingredient:',
-      choices: [...choices, { title: 'Go back', description: 'Walk back to the previous screen', value: 999 }],
+      choices: [
+        { title: '(menu) Select multiple', description: 'Select multiple ingredients', value: -1 },
+        ...choices,
+        { title: 'Go back', description: 'Walk back to the previous screen', value: 999 },
+      ],
     });
 
     switch (response.value) {
+      case -1:
+        this._saveScreen({ screen: this.selectIngredient });
+        this.selectMultiple('ingredient');
+        break;
       case 999:
         this._goBackOneScreen();
         return;
@@ -168,6 +189,51 @@ class Inquirer {
         }
         return;
     }
+  };
+
+  selectMultiple = async (type: ScriptType) => {
+    let choices: InternalChoice[];
+    if (type === 'ingredient') {
+      choices = scriptsDB.ingredients().map((path, index) => {
+        const data = scriptsDB.get(path);
+        return { title: data.title, description: data.description, value: index, path: path };
+      });
+    } else {
+      choices = scriptsDB.recipes().map((path, index) => {
+        const data = scriptsDB.get(path);
+        return { title: data.title, description: data.description, value: index, path: path };
+      });
+    }
+
+    const response = await prompts({
+      type: 'multiselect',
+      name: 'value',
+      message: `Pick & choose what ${type}(s) you'd like:`,
+
+      choices: [...choices],
+      hint: '- Space to select. Return to submit',
+    });
+
+    var prompt = new PromptSort({
+      name: 'colors',
+      message: `Order ${type}(s) as you please - Shift + Up/Down to reorder | Enter to submit`,
+      choices: response.value.map((i: number) => {
+        return `${choices[i].title} - original[${i}]`;
+      }),
+    });
+
+    const sortedList: string[] = await prompt.run();
+
+    const regex = /original\[(.*?)\]/;
+    const sortedIndexes: number[] = sortedList.map((val) => {
+      const match = regex.exec(val);
+      return match ? parseInt(match[1]) : 0;
+    });
+
+    this.cookThem(
+      sortedIndexes.map((choice) => choices[choice].path),
+      sortedIndexes.map((choice) => scriptsDB.get(choices[choice].path)),
+    );
   };
 
   cookIt = async (path: string, choice: ScriptDataType) => {
@@ -192,6 +258,34 @@ class Inquirer {
         const exe = new BashExe();
         await exe.run(path, choice);
         this.cookIt(path, choice);
+        break;
+      case 999:
+        this._goBackOneScreen();
+        return;
+      default:
+        this.exit();
+        return;
+    }
+  };
+
+  cookThem = async (paths: string[], choices: ScriptDataType[]) => {
+    const response = await prompts({
+      type: 'select',
+      name: 'value',
+      message: `What should we do with your picks?`,
+      choices: [
+        { title: 'Cook them', description: 'Execute every script in order', value: 1 },
+        { title: 'Go back', description: 'Walk back to the previous screen', value: 999 },
+      ],
+    });
+
+    switch (response.value) {
+      case 1:
+        const exe = new BashExe();
+        for (let i = 0; i < paths.length; i++) {
+          await exe.run(paths[i], choices[i]);
+        }
+        this._goBackOneScreen();
         break;
       case 999:
         this._goBackOneScreen();

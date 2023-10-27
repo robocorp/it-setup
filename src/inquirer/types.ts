@@ -1,7 +1,7 @@
 import { Choice } from 'prompts';
 
 export interface InternalChoice extends Choice {
-  path?: string;
+  path: string;
 }
 
 export const enum Choices {

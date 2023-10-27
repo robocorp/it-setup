@@ -1,9 +1,9 @@
 #!/bin/bash
 # ---
-# title: List Robocorp Home
+# title: List Robocorp Home 2
 # description: Listing the Robocorp Home directory
 # os: darwin
 # type: ingredient
 # ---
 
-ls -al ~/.robocorp/
+echo "List Robocorp Home 2"
