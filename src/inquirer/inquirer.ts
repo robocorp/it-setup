@@ -127,10 +127,22 @@ class Inquirer {
       type: 'select',
       name: 'value',
       message: 'Choose your recipe:',
-      choices: [...cleanChoices, { title: '< Go back', description: 'Walk back to the previous screen', value: 999 }],
+      choices: [
+        {
+          title: '> Prepare your own recipe',
+          description: 'Select multiple recipes & cook your own',
+          value: -1,
+        },
+        ...cleanChoices,
+        { title: '< Go back', description: 'Walk back to the previous screen', value: 999 },
+      ],
     });
 
     switch (response.value) {
+      case -1:
+        this._saveScreen({ screen: this.selectRecipe });
+        this.selectMultiple('recipe');
+        break;
       case 999:
         this._goBackOneScreen();
         return;
@@ -271,6 +283,7 @@ class Inquirer {
         logger.output(`'${choice.title}' details:`, () => {
           logger.info(scriptsDB.getTableData(scriptsDB.getPrintableData(choice)));
         });
+        scriptsDB.printInternalSteps(choice, logger);
         this.cookIt(choice);
         break;
       case 1:

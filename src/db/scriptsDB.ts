@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { extractScriptData, getAllFilePathsInDirectory, getUUID, isScriptCompatible } from './utils';
 import { ScriptDBType, ScriptDataPrintable, ScriptDataType } from '../types';
-import { getLogger } from '../log';
+import { LoggerType, getLogger } from '../log';
 
 import Table from 'easy-table';
 import { sleep } from '../utils';
@@ -144,6 +144,30 @@ ${choices.map((choice) => (choice ? `${JSON.stringify(choice)},` : ''))}
     data: (ScriptDataType | undefined)[] | ScriptDataType | (ScriptDataPrintable | undefined)[] | ScriptDataPrintable,
   ) => {
     return Table.print(data);
+  };
+
+  printInternalSteps = (data: ScriptDataType, log?: LoggerType) => {
+    if (data.internalSteps === undefined) {
+      return;
+    }
+    const tempData = data.internalSteps.map((value, index) => {
+      return value
+        ? {
+            step: `Step ${index + 1}`,
+            title: value.title,
+            description: value.description,
+          }
+        : undefined;
+    });
+    const dataToPlot = tempData.filter(
+      (data): data is { step: string; title: string; description: string | undefined } => !!data,
+    );
+
+    const trueLog = log || logger;
+
+    trueLog.output('The internal steps:', () => {
+      trueLog.info(scriptsDB.getTableData(dataToPlot));
+    });
   };
 
   has = (path: string) => Object.keys(this._db).find((k: string) => k === path) !== undefined;

@@ -4,15 +4,15 @@ type prop = { prefix?: string; force?: boolean };
 
 type logType = 'info' | 'warn' | 'debug' | 'error';
 
-export const getLogger = (
-  p: prop,
-): {
+export type LoggerType = {
   info: (...data: any[]) => void;
   warn: (...data: any[]) => void;
   debug: (...data: any[]) => void;
   error: (...data: any[]) => void;
   output: (msg: string, inner: () => void, type?: logType) => void;
-} => {
+};
+
+export const getLogger = (p: prop): LoggerType => {
   return process.env['NODE_ENV'] === 'development' || p.force
     ? {
         info: (...data: any[]) =>

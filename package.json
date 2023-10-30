@@ -24,6 +24,7 @@
     ]
   },
   "scripts": {
+    "setup": "yarn install",
     "clean": "yarn rimraf lib dist release",
     "build": "npm-run-all clean build:app build:assets",
     "build:app": "npx tsc && npx tsc-alias",
