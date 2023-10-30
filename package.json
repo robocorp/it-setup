@@ -1,5 +1,5 @@
 {
-  "name": "roboit",
+  "name": "robochef",
   "version": "0.0.1",
   "type": "commonjs",
   "description": "This repository contains tools and scripts needed by IT organizations that are using different fleet management tools.",
@@ -19,6 +19,7 @@
     "assets": [
       "./lib/powershell/**/*",
       "./lib/bash/**/*",
+      "./lib/recipes/**/*",
       "./node_modules/figlet/fonts/3D-ASCII.flf"
     ]
   },
@@ -26,7 +27,7 @@
     "clean": "yarn rimraf lib dist release",
     "build": "npm-run-all clean build:app build:assets",
     "build:app": "npx tsc && npx tsc-alias",
-    "build:assets": "cp -R ./package.json ./powershell ./bash ./lib/",
+    "build:assets": "node ./buildResources.js",
     "test": "yarn run test:types && jest --runInBand",
     "test:lint": "eslint --ext .tsx,.ts --max-warnings 0 .",
     "test:types": "tsc --noEmit",
@@ -34,8 +35,10 @@
     "fix": "npm-run-all fix:prettier fix:lint",
     "fix:prettier": "prettier --write src/ ",
     "fix:lint": "eslint --fix --ext .tsx,.ts .",
-    "dev": "NODE_ENV=development npx ts-node src/cli.ts",
-    "exe": "yarn clean && yarn build && yarn pkg .",
+    "dev": "npm-run-all dev:req dev:run",
+    "dev:req": "npm-run-all build:assets",
+    "dev:run": "NODE_ENV=development npx ts-node src/cli.ts",
+    "exe": "yarn clean && yarn build && yarn pkg . --debug",
     "watch": "tsc --watch"
   },
   "engines": {
@@ -47,14 +50,17 @@
     "chalk": "4.1.2",
     "easy-table": "^1.2.0",
     "figlet": "^1.7.0",
+    "log4js": "^6.9.1",
     "nanospinner": "^1.1.0",
     "prompt-sort": "^1.1.0",
     "prompts": "^2.4.2"
   },
   "devDependencies": {
     "@types/figlet": "^1.5.7",
+    "@types/fs-extra": "^11.0.3",
     "@types/prompts": "^2.4.7",
     "copyfiles": "^2.4.1",
+    "fs-extra": "^11.1.1",
     "npm-run-all": "^4.1.5",
     "pkg": "^5.8.1",
     "prettier": "^3.0.3",

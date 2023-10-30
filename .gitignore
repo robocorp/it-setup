@@ -120,3 +120,6 @@ lib/
 release/
 licenses/
 resources/assets/*.exe
+
+# User created files
+user/

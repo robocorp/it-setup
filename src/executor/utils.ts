@@ -1,8 +1,11 @@
 import path from 'path';
 import os from 'os';
-
 import { ConsoleParser, ProcessHandler } from '@robocorp/dev-tools-commons';
-import { ScriptDataType } from '../types';
+
+import { getLogger } from 'log4js';
+
+const logger = getLogger('Executor');
+
 
 export const resolveUserAppDataRoot = (): string | undefined => {
   switch (os.platform()) {
@@ -30,9 +33,5 @@ export const resolveRobocorpRoot = (): string | undefined => {
   }
 };
 
-export const consoleParser = new ConsoleParser();
-export const processHandler = new ProcessHandler(resolveRobocorpRoot() || '');
-
-export class Executor {
-  run: ((path: string, choice: ScriptDataType) => void) | undefined;
-}
+export const consoleParser = new ConsoleParser(logger);
+export const processHandler = new ProcessHandler(resolveRobocorpRoot() || '', logger);

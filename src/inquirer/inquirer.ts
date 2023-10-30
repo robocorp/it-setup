@@ -1,14 +1,13 @@
 import prompts from 'prompts';
-import Table from 'easy-table';
 
 const PromptSort = require('prompt-sort');
 
-import { Choices, InternalChoice } from './types';
-import { scriptsDB } from '../db/scriptsDB';
-import { ScriptDataType, ScriptType } from '../types';
-
+import { scriptsDB } from '../db';
 import { getLogger } from '../log';
-import { BashExe } from '../executor/bashExe';
+import { ScriptDataPrintable, ScriptDataType, ScriptType } from '../types';
+import { BashExe, ExecutorFactory } from '../executor';
+
+import { Choices, InternalChoice } from './types';
 
 const logger = getLogger({ force: true });
 
@@ -73,59 +72,62 @@ class Inquirer {
   };
 
   listAll: Screen = async () => {
-    const recipes: any[] = [];
-    const ingredients: any[] = [];
-    scriptsDB.entries().forEach(([k, data]) => {
-      if (data.type && data.type === 'recipe')
-        recipes.push({
-          title: data.title,
-          type: data.type,
-          category: data.category,
-          supported: scriptsDB.isSupported(k),
-          description: data.description,
-        });
-      else
-        ingredients.push({
-          title: data.title,
-          type: data.type,
-          category: data.category,
-          supported: scriptsDB.isSupported(k),
-          description: data.description,
-        });
+    const recipes: ScriptDataPrintable[] = [];
+    const ingredients: ScriptDataPrintable[] = [];
+    const unknown: ScriptDataPrintable[] = [];
+    scriptsDB.entries().forEach(([, data]) => {
+      if (data.type && data.type === 'recipe') recipes.push(scriptsDB.getPrintableData(data));
+      else if (data.type && data.type === 'ingredient') ingredients.push(scriptsDB.getPrintableData(data));
+      else unknown.push(scriptsDB.getPrintableData(data));
     });
 
-    logger.info();
-    logger.warn('Here are the known recipes:');
-    logger.info(Table.print(recipes));
+    logger.output('The Fridge (DB)', () => {
+      if (recipes.length > 0) {
+        logger.warn('Here are the known recipes:');
+        logger.info(scriptsDB.getTableData(recipes));
+      } else {
+        logger.error('There are no recipes in the fridge.');
+      }
 
-    logger.warn('Here are the known ingredients:');
-    logger.info(Table.print(ingredients));
+      if (ingredients.length > 0) {
+        logger.warn('Here are the known ingredients:');
+        logger.info(scriptsDB.getTableData(ingredients));
+      } else {
+        logger.error('There are no ingredients in the fridge.');
+      }
+      if (unknown.length > 0) {
+        logger.warn('Here are the unknowns:');
+        logger.info(scriptsDB.getTableData(unknown));
+      } else {
+        logger.warn('There are no unknowns.');
+      }
+    });
     this._goBackOneScreen();
   };
 
   selectRecipe: Screen = async () => {
-    let choices: InternalChoice[] = scriptsDB.recipes().map((path, index) => {
+    let choices: (InternalChoice | undefined)[] = scriptsDB.recipes().map((path, index) => {
       const data = scriptsDB.get(path);
-      return { title: data.title, description: data.description, value: index, path: path };
+      return data ? { title: data.title, description: data.description, value: index, path: path } : undefined;
     });
 
-    if (choices.length === 0) {
-      choices = [
-        {
-          title: 'No available recipes',
-          description: 'Walk back to the previous screen',
-          disabled: true,
-          value: 999,
-          path: '',
-        },
-      ];
+    const cleanChoices = choices.filter((choice): choice is InternalChoice => !!choice);
+
+    if (cleanChoices.length === 0) {
+      cleanChoices.push({
+        title: 'No available recipes',
+        description: 'Walk back to the previous screen',
+        disabled: true,
+        value: 999,
+        path: '',
+      });
     }
 
     const response = await prompts({
       type: 'select',
       name: 'value',
       message: 'Choose your recipe:',
-      choices: [...choices, { title: 'Go back', description: 'Walk back to the previous screen', value: 999 }],
+      choices: [...cleanChoices, { title: '< Go back', description: 'Walk back to the previous screen', value: 999 }],
     });
 
     switch (response.value) {
@@ -133,32 +135,31 @@ class Inquirer {
         this._goBackOneScreen();
         return;
       default:
-        const path = choices[response.value].path;
+        const path = cleanChoices[response.value] ? cleanChoices[response.value].path : undefined;
         if (path) {
           this._saveScreen({ screen: this.selectRecipe });
           const data = scriptsDB.get(path);
-          this.cookIt(path, data);
+          this.cookIt(data);
         }
         return;
     }
   };
 
   selectIngredient: Screen = async () => {
-    let choices: InternalChoice[] = scriptsDB.ingredients().map((path, index) => {
+    let choices: (InternalChoice | undefined)[] = scriptsDB.ingredients().map((path, index) => {
       const data = scriptsDB.get(path);
-      return { title: data.title, description: data.description, value: index, path: path };
+      return data ? { title: data.title, description: data.description, value: index, path: path } : undefined;
     });
+    const cleanChoices = choices.filter((choice): choice is InternalChoice => !!choice);
 
-    if (choices.length === 0) {
-      choices = [
-        {
-          title: 'No available ingredients',
-          description: 'Walk back to the previous screen',
-          disabled: true,
-          value: 999,
-          path: '',
-        },
-      ];
+    if (cleanChoices.length === 0) {
+      cleanChoices.push({
+        title: 'No available ingredients',
+        description: 'Walk back to the previous screen',
+        disabled: true,
+        value: 999,
+        path: '',
+      });
     }
 
     const response = await prompts({
@@ -166,9 +167,13 @@ class Inquirer {
       name: 'value',
       message: 'Choose your ingredient:',
       choices: [
-        { title: '(menu) Select multiple', description: 'Select multiple ingredients', value: -1 },
-        ...choices,
-        { title: 'Go back', description: 'Walk back to the previous screen', value: 999 },
+        {
+          title: '> Prepare your own recipe',
+          description: 'Select multiple ingredients & cook your own recipe',
+          value: -1,
+        },
+        ...cleanChoices,
+        { title: '< Go back', description: 'Walk back to the previous screen', value: 999 },
       ],
     });
 
@@ -181,36 +186,39 @@ class Inquirer {
         this._goBackOneScreen();
         return;
       default:
-        const path = choices[response.value].path;
-        if (path) {
-          this._saveScreen({ screen: this.selectIngredient });
-          const data = scriptsDB.get(path);
-          this.cookIt(path, data);
+        if (cleanChoices[response.value]) {
+          const path = cleanChoices[response.value].path;
+          if (path) {
+            this._saveScreen({ screen: this.selectIngredient });
+            const data = scriptsDB.get(path);
+            this.cookIt(data);
+          }
         }
         return;
     }
   };
 
   selectMultiple = async (type: ScriptType) => {
-    let choices: InternalChoice[];
+    let choices: (InternalChoice | undefined)[];
     if (type === 'ingredient') {
       choices = scriptsDB.ingredients().map((path, index) => {
         const data = scriptsDB.get(path);
-        return { title: data.title, description: data.description, value: index, path: path };
+        return data ? { title: data.title, description: data.description, value: index, path: path } : undefined;
       });
     } else {
       choices = scriptsDB.recipes().map((path, index) => {
         const data = scriptsDB.get(path);
-        return { title: data.title, description: data.description, value: index, path: path };
+        return data ? { title: data.title, description: data.description, value: index, path: path } : undefined;
       });
     }
+    const cleanChoices = choices.filter((choice): choice is InternalChoice => !!choice);
 
     const response = await prompts({
       type: 'multiselect',
       name: 'value',
       message: `Pick & choose what ${type}(s) you'd like:`,
 
-      choices: [...choices],
+      choices: [...cleanChoices],
       hint: '- Space to select. Return to submit',
     });
 
@@ -218,7 +226,7 @@ class Inquirer {
       name: 'colors',
       message: `Order ${type}(s) as you please - Shift + Up/Down to reorder | Enter to submit`,
       choices: response.value.map((i: number) => {
-        return `${choices[i].title} - original[${i}]`;
+        return `${cleanChoices[i].title} - original[${i}]`;
       }),
     });
 
@@ -230,35 +238,63 @@ class Inquirer {
       return match ? parseInt(match[1]) : 0;
     });
 
-    this.cookThem(
-      sortedIndexes.map((choice) => choices[choice].path),
-      sortedIndexes.map((choice) => scriptsDB.get(choices[choice].path)),
-    );
+    this.cookThem(sortedIndexes.map((choice) => scriptsDB.get(cleanChoices[choice].path)));
   };
 
-  cookIt = async (path: string, choice: ScriptDataType) => {
+  cookIt = async (choice: ScriptDataType | undefined) => {
+    if (!choice) {
+      logger.warn('Cooking choice is undefined');
+      return;
+    }
+    const choices = [
+      { title: 'See details', description: 'Print out the details of the script', value: 0 },
+      { title: 'Cook it up', description: 'Execute order', value: 1 },
+      { title: '< Go back', description: 'Walk back to the previous screen', value: 999 },
+    ];
+
+    if (scriptsDB.isUserRecipe(choice)) {
+      choices.splice(-2, 0, {
+        title: 'Forget it',
+        description: `Remove the ${choice.type || 'script'} from memory`,
+        value: 888,
+      });
+    }
     const response = await prompts({
       type: 'select',
       name: 'value',
       message: `What should we do with '${choice.title}'?`,
-      choices: [
-        { title: 'See details', description: 'Print out the details of the script', value: 0 },
-        { title: 'Cook it up', description: 'Execute script', value: 1 },
-        { title: 'Go back', description: 'Walk back to the previous screen', value: 999 },
-      ],
+      choices,
     });
 
     switch (response.value) {
       case 0:
-        logger.info();
-        logger.info(Table.print(choice));
-        this.cookIt(path, choice);
+        logger.output(`'${choice.title}' details:`, () => {
+          logger.info(scriptsDB.getTableData(scriptsDB.getPrintableData(choice)));
+        });
+        this.cookIt(choice);
         break;
       case 1:
-        const exe = new BashExe();
-        await exe.run(path, choice);
-        this.cookIt(path, choice);
+        const exe = ExecutorFactory(choice);
+        if (exe !== undefined && exe.run) {
+          await exe.run(choice);
+          logger.info();
+          this.cookIt(choice);
+        }
         break;
+      case 888:
+        const response = await prompts({
+          type: 'confirm',
+          name: 'value',
+          message: 'Can you confirm?',
+          initial: true,
+        });
+        if (response.value) {
+          scriptsDB.deleteUserRecipe(choice);
+          this._goBackOneScreen();
+          return;
+        }
+        this.cookIt(choice);
+        return;
       case 999:
         this._goBackOneScreen();
         return;
@@ -268,22 +304,51 @@ class Inquirer {
     }
   };
 
-  cookThem = async (paths: string[], choices: ScriptDataType[]) => {
+  cookThem = async (choices: (ScriptDataType | undefined)[]) => {
     const response = await prompts({
       type: 'select',
       name: 'value',
-      message: `What should we do with your picks?`,
+      message: `What should we do with your new recipe?`,
       choices: [
-        { title: 'Cook them', description: 'Execute every script in order', value: 1 },
-        { title: 'Go back', description: 'Walk back to the previous screen', value: 999 },
+        { title: 'Print recipe', description: 'Print out recipe with the execution order', value: 1 },
+        { title: 'Save recipe', description: 'Saves the current recipe for future uses', value: 2 },
+        { title: 'Cook it up', description: 'Execute the newly created recipe', value: 3 },
+        { title: '< Go back', description: 'Walk back to the previous screen', value: 999 },
       ],
     });
 
     switch (response.value) {
       case 1:
+        logger.output('Current recipe:', () => {
+          logger.info(
+            scriptsDB.getTableData(
+              choices.map((value, index) => {
+                return value
+                  ? {
+                      step: `Step ${index + 1}`,
+                      title: value.title,
+                      description: value.description,
+                    }
+                  : undefined;
+              }),
+            ),
+          );
+        });
+        this.cookThem(choices);
+        break;
+      case 2:
+        const response = await prompts({
+          type: 'text',
+          name: 'name',
+          message: 'What should be the recipe name?',
+        });
+        scriptsDB.saveUserRecipe(response.name, choices);
+        this.cookThem(choices);
+        break;
+      case 3:
         const exe = new BashExe();
-        for (let i = 0; i < paths.length; i++) {
-          await exe.run(paths[i], choices[i]);
+        for (let i = 0; i < choices.length; i++) {
+          await exe.run(choices[i]);
         }
         this._goBackOneScreen();
         break;
