@@ -40,6 +40,11 @@ class Inquirer {
           description: 'List all available Recipes & Ingredients',
           value: Choices.LIST_ALL,
         },
+        {
+          title: 'Build your own recipe',
+          description: 'Select recipes & ingredients to create a new recipe',
+          value: Choices.CREATE_RECIPE,
+        },
         { title: 'Select recipe(s)', description: 'Select recipe(s) to cook', value: Choices.SELECT_RECIPE },
         {
           title: 'Select ingredient(s)',
@@ -55,6 +60,9 @@ class Inquirer {
     switch (response.value) {
       case Choices.LIST_ALL:
         this.listAll();
+        break;
+      case Choices.CREATE_RECIPE:
+        this.selectMultiple('all');
         break;
       case Choices.SELECT_RECIPE:
         this.selectRecipe();
@@ -108,10 +116,20 @@ class Inquirer {
   selectRecipe: Screen = async () => {
     let choices: (InternalChoice | undefined)[] = scriptsDB.recipes().map((path, index) => {
       const data = scriptsDB.get(path);
-      return data ? { title: data.title, description: data.description, value: index, path: path } : undefined;
+      return data
+        ? {
+            title: data.title,
+            description: data.description,
+            value: index,
+            path: path,
+            disabled: !scriptsDB.isSupported(path),
+          }
+        : undefined;
     });
 
     const cleanChoices = choices.filter((choice): choice is InternalChoice => !!choice);
+
+    const allDisabled = cleanChoices.every((choice) => choice.disabled === true);
 
     if (cleanChoices.length === 0) {
       cleanChoices.push({
@@ -127,11 +145,13 @@ class Inquirer {
       type: 'select',
       name: 'value',
       message: 'Choose your recipe:',
+      warn: 'Recipe cannot be ordered on this OS',
       choices: [
         {
           title: '> Prepare your own recipe',
           description: 'Select multiple recipes & cook your own',
           value: -1,
+          disabled: allDisabled,
         },
         ...cleanChoices,
         { title: '< Go back', description: 'Walk back to the previous screen', value: 999 },
@@ -160,9 +180,19 @@ class Inquirer {
   selectIngredient: Screen = async () => {
     let choices: (InternalChoice | undefined)[] = scriptsDB.ingredients().map((path, index) => {
       const data = scriptsDB.get(path);
-      return data ? { title: data.title, description: data.description, value: index, path: path } : undefined;
+      return data
+        ? {
+            title: data.title,
+            description: data.description,
+            value: index,
+            path: path,
+            disabled: !scriptsDB.isSupported(path),
+          }
+        : undefined;
     });
     const cleanChoices = choices.filter((choice): choice is InternalChoice => !!choice);
+
+    const allDisabled = cleanChoices.every((choice) => choice.disabled === true);
 
     if (cleanChoices.length === 0) {
       cleanChoices.push({
@@ -178,10 +208,12 @@ class Inquirer {
       type: 'select',
       name: 'value',
       message: 'Choose your ingredient:',
+      warn: 'Ingredient cannot be ordered on this OS',
       choices: [
         {
           title: '> Prepare your own recipe',
           description: 'Select multiple ingredients & cook your own recipe',
+          disabled: allDisabled,
           value: -1,
         },
         ...cleanChoices,
@@ -212,17 +244,38 @@ class Inquirer {
 
   selectMultiple = async (type: ScriptType) => {
     let choices: (InternalChoice | undefined)[];
-    if (type === 'ingredient') {
-      choices = scriptsDB.ingredients().map((path, index) => {
-        const data = scriptsDB.get(path);
-        return data ? { title: data.title, description: data.description, value: index, path: path } : undefined;
-      });
-    } else {
-      choices = scriptsDB.recipes().map((path, index) => {
-        const data = scriptsDB.get(path);
-        return data ? { title: data.title, description: data.description, value: index, path: path } : undefined;
-      });
+    switch (type) {
+      case 'ingredient':
+        choices = scriptsDB.ingredients().map((path, index) => {
+          const data = scriptsDB.get(path);
+          return data && scriptsDB.isSupported(path)
+            ? { title: data.title, description: data.description, value: index, path: path }
+            : undefined;
+        });
+        break;
+      case 'recipe':
+        choices = scriptsDB.recipes().map((path, index) => {
+          const data = scriptsDB.get(path);
+          return data && scriptsDB.isSupported(path)
+            ? { title: data.title, description: data.description, value: index, path: path }
+            : undefined;
+        });
+        break;
+      default:
+        choices = scriptsDB.keys().map((path, index) => {
+          const data = scriptsDB.get(path);
+          const isRecipe = data?.type === 'recipe';
+          return data && scriptsDB.isSupported(path)
+            ? {
+                title: isRecipe ? `(recipe) ${data.title}` : `(ingredient) ${data.title}`,
+                description: data.description,
+                value: index,
+                path: path,
+              }
+            : undefined;
+        });
     }
+
     const cleanChoices = choices.filter((choice): choice is InternalChoice => !!choice);
 
     const response = await prompts({
@@ -234,12 +287,18 @@ class Inquirer {
       hint: '- Space to select. Return to submit',
     });
 
+    if (!response.value) {
+      this._goBackOneScreen();
+      return;
+    }
     var prompt = new PromptSort({
       name: 'colors',
       message: `Order ${type}(s) as you please - Shift + Up/Down to reorder | Enter to submit`,
-      choices: response.value.map((i: number) => {
-        return `${cleanChoices[i].title} - original[${i}]`;
-      }),
+      choices: response.value
+        ? response.value.map((i: number) => {
+            return `${cleanChoices[i].title} - original[${i}]`;
+          })
+        : [],
     });
 
     const sortedList: string[] = await prompt.run();

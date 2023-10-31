@@ -4,7 +4,7 @@ export type ScriptOS = 'windows' | 'linux' | 'darwin';
 
 export type ScriptCategory = 'worker' | 'ssl';
 
-export type ScriptType = 'recipe' | 'ingredient';
+export type ScriptType = 'recipe' | 'ingredient' | 'all';
 
 export type ScriptDataType = {
   title: string;

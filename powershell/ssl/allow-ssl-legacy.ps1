@@ -1,3 +1,11 @@
+# ---
+# title: Allow SSL Legacy Renegociation
+# description: Allow SSL Legacy Renegociation
+# requirements: User needs to be an admin
+# os: windows
+# type: ingredient
+# ---
+
 param (
     [string]$Level
 )

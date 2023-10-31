@@ -7,6 +7,7 @@ export interface InternalChoice extends Choice {
 export const enum Choices {
   EXIT = 'exit',
   LIST_ALL = 'list_all',
+  CREATE_RECIPE = 'create_recipe',
   SELECT_RECIPE = 'select_recipes',
   SELECT_INGREDIENT = 'select_ingredients',
 }

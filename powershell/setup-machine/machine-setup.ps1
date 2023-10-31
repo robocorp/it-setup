@@ -1,3 +1,11 @@
+# ---
+# title: Machine Setup
+# description: Setup for the device
+# os: windows
+# type: recipe
+# ---
+
+
 # Store the current working directory
 $originalPath = Get-Location
 $RCC_VERSION = "v17.1.3"

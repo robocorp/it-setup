@@ -2,6 +2,7 @@
 # title: List Services and tasks
 # description: Listing Windows Services & Scheduled tasks
 # requirements: User needs to be an admin
+# os: windows
 # type: recipe
 # ---
 

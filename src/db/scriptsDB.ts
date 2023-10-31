@@ -67,8 +67,8 @@ class ScriptsDB {
     logger.warn('Script DB is:', JSON.stringify(scriptsDB, undefined, 4));
   };
 
-  isSupported = (k: string): boolean => {
-    const data = this.get(k);
+  isSupported = (path: string): boolean => {
+    const data = this.get(path);
     if (data && data.os) {
       switch (os.platform()) {
         case 'win32':

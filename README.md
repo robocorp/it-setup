@@ -50,7 +50,7 @@ For **RoboChef** to recognize the script as being part of the DB, you'll need to
 # description: Running several atomic scripts that would remove the Windows Service & Scheduled task
 # requirements: User needs to be an admin
 # category: worker | ssl
-# system: windows | linux | darwin
+# os (this should always be specified so that the script isn't disabled): windows | linux | darwin
 # type: recipe | ingredient
 # executor (optional) - this is determined through the file extension: bash | powershell | js
 # internalPath (not for use) - (this is created when scanning the internal objects)
