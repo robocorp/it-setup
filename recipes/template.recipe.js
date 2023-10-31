@@ -14,7 +14,6 @@ module.exports = {
       os: 'darwin',
       type: 'ingredient',
     },
-    ,
     {
       title: 'Echo 2',
       internalPath: './bash/tests/echo2.sh',
@@ -22,7 +21,6 @@ module.exports = {
       os: 'darwin',
       type: 'ingredient',
     },
-    ,
     {
       title: 'Echo 3',
       internalPath: './bash/tests/echo3.sh',
@@ -30,7 +28,6 @@ module.exports = {
       os: 'darwin',
       type: 'ingredient',
     },
-    ,
     {
       title: 'Echo Fail',
       internalPath: './bash/tests/echo4.fail.sh',

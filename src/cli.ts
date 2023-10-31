@@ -14,7 +14,7 @@ Hi, I'm ${packageJSON.name.toUpperCase()}. Here is what I can do for you:
 - '${packageJSON.name}' is a CLI tool that helps with diagnosing and execute actions on the environment
 - '${packageJSON.name}' can execute different Recipes & Ingredients:
 --- 'Ingredients' = are atomic scripts with a simple and straight forward functionality
---- 'Recipes' = are a collection of ingredients (atomic scripts/functions) to create more complex functionality
+--- 'Recipes' = are collections of ingredients (atomic scripts/functions) that create more complex functionality
 - the Recipes and Ingredients are stored in the Fridge (the internal Database)
 - the available sous-chefs (Executors) are: ${Object.keys(ExecutorTypes).join(' | ')}
 - you can always build your own Recipes from available Ingredients or a combination of other Recipes
