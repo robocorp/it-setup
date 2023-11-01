@@ -39,13 +39,13 @@ function RemoveEnvVariable {
         [string]$variableName
     )
 
-    $exists = Check-EnvVariable $variableName "User"
+    $exists = CheckEnvVariable -variableName $variableName -target "User"
     if ($exists) {
         [System.Environment]::SetEnvironmentVariable($variableName, $null, [System.EnvironmentVariableTarget]::User)
         Write-Host "Removed user-level environment variable '$variableName'."
     }
 
-    $exists = Check-EnvVariable $variableName "Machine"
+    $exists = CheckEnvVariable -variableName $variableName -target "Machine"
     if ($exists) {
         [System.Environment]::SetEnvironmentVariable($variableName, $null, [System.EnvironmentVariableTarget]::Machine)
         Write-Host "Removed system-level environment variable '$variableName'."
@@ -61,7 +61,7 @@ function SetEnvVariable {
         [Parameter(Position = 2)]
         [string]$target = "User" # User / Machine
     )
-    $exists = CheckEnvVariable($variableName, $target)
+    $exists = CheckEnvVariable -variableName $variableName -target $target
     if (-not $exists) {
         [System.Environment]::SetEnvironmentVariable($variableName, $variableValue, $target)
         Write-Host "Set environment variable '$variableName' to '$variableValue' at $target level."
@@ -218,12 +218,12 @@ function RunSetup {
 
         Write-Host "- Set env. variable: OPENSSL_CONF=$OpenSslConfigPath"
         if (-not $DryRun) {
-            SetEnvVariable "OPENSSL_CONF" $OpenSslConfigPath
+            SetEnvVariable -variableName "OPENSSL_CONF" -variableValue $OpenSslConfigPath
         }
 
         Write-Host "- Set env. variable: RC_TLS_LEGACY_RENEGOTIATION_ALLOWED=True"
         if (-not $DryRun) {
-            SetEnvVariable "RC_TLS_LEGACY_RENEGOTIATION_ALLOWED" "True"
+            SetEnvVariable -variableName "RC_TLS_LEGACY_RENEGOTIATION_ALLOWED" -variableValue "True"
         }
     } catch {
         # Capture and handle errors here
