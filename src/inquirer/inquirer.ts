@@ -278,6 +278,8 @@ class Inquirer {
 
     const cleanChoices = choices.filter((choice): choice is InternalChoice => !!choice);
 
+    logger.debug('These are the clean choices:', JSON.stringify(cleanChoices, undefined, 4));
+
     const response = await prompts({
       type: 'multiselect',
       name: 'value',
@@ -286,6 +288,8 @@ class Inquirer {
       choices: [...cleanChoices],
       hint: '- Space to select. Return to submit',
     });
+
+    logger.debug('These are the picks:', JSON.stringify(response.value, undefined, 4));
 
     if (!response.value) {
       this._goBackOneScreen();
@@ -296,12 +300,16 @@ class Inquirer {
       message: `Order ${type}(s) as you please - Shift + Up/Down to reorder | Enter to submit`,
       choices: response.value
         ? response.value.map((i: number) => {
-            return `${cleanChoices[i].title} - original[${i}]`;
+            logger.debug(`Creating elem to order: position ${i}`, cleanChoices[i]);
+            const choice = cleanChoices.find((c) => c.value === i);
+            return `${choice?.title} - original[${i}]`;
           })
         : [],
     });
 
     const sortedList: string[] = await prompt.run();
+
+    logger.debug('Sorted List:', JSON.stringify(sortedList));
 
     const regex = /original\[(.*?)\]/;
     const sortedIndexes: number[] = sortedList.map((val) => {
@@ -309,7 +317,13 @@ class Inquirer {
       return match ? parseInt(match[1]) : 0;
     });
 
-    this.cookThem(sortedIndexes.map((choice) => scriptsDB.get(cleanChoices[choice].path)));
+    logger.debug('Sorted Indexes:', JSON.stringify(sortedIndexes));
+    this.cookThem(
+      sortedIndexes.map((i) => {
+        const choice = cleanChoices.find((c) => c.value === i);
+        return choice ? scriptsDB.get(choice.path) : undefined;
+      }),
+    );
   };
 
   cookIt = async (choice: ScriptDataType | undefined) => {
