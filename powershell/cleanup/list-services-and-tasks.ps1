@@ -1,17 +1,20 @@
 # ---
-# title: List Services and tasks
+# title: List Services and Tasks
 # description: Listing Windows Services & Scheduled tasks
 # requirements: User needs to be an admin
 # os: windows
-# type: recipe
+# category: Worker
+# type: ingredient
 # ---
 
 
 # Check if PowerShell is run as administrator
 if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     Write-Output "Please run this script as an administrator."
-    Exit
+    Exit 1
 }
+
+Write-Output "Gathering Tasks & Services..."
 
 # Get the string to search for in Task Scheduler job names
 $matchName = "Robocorp-"

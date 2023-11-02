@@ -6,6 +6,7 @@ const logger = getLogger({ prefix: 'utils' });
 
 import { ExecutorTypes } from '../executor';
 import { ScriptCategory, ScriptDataType, ScriptOS, ScriptType } from '../types';
+import { getExecutorFromExt } from '../utils';
 
 export const getAllFilePathsInDirectory = (dirPath: string, fileArray?: string[]): string[] | undefined => {
   if (fs.existsSync(dirPath)) {
@@ -64,6 +65,11 @@ export const extractScriptData = (path: string, data: string): ScriptDataType | 
     logger.warn('Requiring script failed:', e);
   }
 
+  let executorDef: ExecutorTypes | undefined = (getExecutor(data) || [, undefined])[1] as ExecutorTypes;
+  if (executorDef === undefined) {
+    executorDef = getExecutorFromExt(path);
+  }
+
   return {
     title: title,
     description: (getDescription(data) || [, undefined])[1],
@@ -71,7 +77,7 @@ export const extractScriptData = (path: string, data: string): ScriptDataType | 
     os: (getOS(data) || [, undefined])[1] as ScriptOS,
     category: (getCategory(data) || [, undefined])[1] as ScriptCategory,
     type: (getType(data) || [, undefined])[1] as ScriptType,
-    executor: (getExecutor(data) || [, undefined])[1] as ExecutorTypes,
+    executor: executorDef,
     internalPath: path,
     internalSteps: internalSteps as ScriptDataType[],
   };

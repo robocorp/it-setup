@@ -89,7 +89,7 @@ class Inquirer {
       else unknown.push(scriptsDB.getPrintableData(data));
     });
 
-    logger.output('The Fridge (DB)', () => {
+    await logger.output('The Fridge (DB)', () => {
       if (recipes.length > 0) {
         logger.warn('Here are the known recipes:');
         logger.info(scriptsDB.getTableData(recipes));
@@ -353,10 +353,10 @@ class Inquirer {
 
     switch (response.value) {
       case 0:
-        logger.output(`'${choice.title}' details:`, () => {
+        await logger.output(`'${choice.title}' details:`, () => {
           logger.info(scriptsDB.getTableData(scriptsDB.getPrintableData(choice)));
         });
-        scriptsDB.printInternalSteps(choice, logger);
+        await scriptsDB.printInternalSteps(choice, logger);
         this.cookIt(choice);
         break;
       case 1:
@@ -405,7 +405,7 @@ class Inquirer {
 
     switch (response.value) {
       case 1:
-        logger.output('Current recipe:', () => {
+        await logger.output('Current recipe:', () => {
           logger.info(
             scriptsDB.getTableData(
               choices.map((value, index) => {

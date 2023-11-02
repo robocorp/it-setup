@@ -18,7 +18,7 @@ export type ScriptDataType = {
   executor?: ExecutorTypes;
 };
 
-export type ScriptDataPrintable = Omit<ScriptDataType, 'internalPath' | 'internalSteps'>;
+export type ScriptDataPrintable = Omit<ScriptDataType, 'internalPath' | 'internalSteps' | 'requirements'>;
 
 export type ScriptDBType = {
   [pathToScript: string]: ScriptDataType;

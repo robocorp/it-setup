@@ -2,7 +2,7 @@ import { ScriptDataType } from '../types';
 
 // ! This needs to be updated if a new Executor is added
 export enum ExecutorTypes {
-  JS = 'js',
+  JS = 'javascript',
   BASH = 'bash',
   POWERSHELL = 'powershell',
 }

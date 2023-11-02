@@ -3,6 +3,7 @@
 # description: Deny SSL Legacy Renegotiation
 # requirements: User needs to be an admin
 # os: windows
+# category: SSL
 # type: ingredient
 # ---
 

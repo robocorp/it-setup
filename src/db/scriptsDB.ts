@@ -6,7 +6,7 @@ import { ScriptDBType, ScriptDataPrintable, ScriptDataType } from '../types';
 import { LoggerType, getLogger } from '../log';
 
 import Table from 'easy-table';
-import { sleep } from '../utils';
+import { TEMP_FOLDER_PATH, sleep } from '../utils';
 
 const logger = getLogger({ prefix: 'scriptDB' });
 
@@ -24,7 +24,7 @@ const logger = getLogger({ prefix: 'scriptDB' });
 */
 
 class ScriptsDB {
-  _tempDirForUser: string = path.join(os.tmpdir(), 'robochef-user-recipes');
+  _tempDirForUser: string = TEMP_FOLDER_PATH;
   _db: ScriptDBType = {};
   _sources: string[] = [];
 
@@ -79,7 +79,7 @@ class ScriptsDB {
           return data.os === 'linux';
       }
     }
-    return false;
+    return true;
   };
 
   saveUserRecipe = (name: string, choices: (ScriptDataType | undefined)[], description?: string) => {
@@ -135,7 +135,6 @@ ${choices.map((choice) => (choice ? `${JSON.stringify(choice)},` : ''))}
       description: data.description,
       executor: data.executor,
       os: data.os,
-      requirements: data.requirements,
       type: data.type,
     };
   };
@@ -146,7 +145,7 @@ ${choices.map((choice) => (choice ? `${JSON.stringify(choice)},` : ''))}
     return Table.print(data);
   };
 
-  printInternalSteps = (data: ScriptDataType, log?: LoggerType) => {
+  printInternalSteps = async (data: ScriptDataType, log?: LoggerType) => {
     if (data.internalSteps === undefined) {
       return;
     }
@@ -165,7 +164,7 @@ ${choices.map((choice) => (choice ? `${JSON.stringify(choice)},` : ''))}
 
     const trueLog = log || logger;
 
-    trueLog.output('The internal steps:', () => {
+    await trueLog.output('The internal steps:', () => {
       trueLog.info(scriptsDB.getTableData(dataToPlot));
     });
   };
@@ -176,13 +175,23 @@ ${choices.map((choice) => (choice ? `${JSON.stringify(choice)},` : ''))}
 
   isEmpty = () => Object.keys(this._db).length === 0;
 
-  recipes = () => Object.keys(this._db).filter((k) => this._db[k].type !== undefined && this._db[k].type === 'recipe');
+  recipes = () =>
+    Object.keys(this._db)
+      .filter((k) => this._db[k].type !== undefined && this._db[k].type === 'recipe')
+      .sort((a, b) => this._db[a].title.localeCompare(this._db[b].title));
   ingredients = () =>
-    Object.keys(this._db).filter((k) => this._db[k].type !== undefined && this._db[k].type === 'ingredient');
+    Object.keys(this._db)
+      .filter((k) => this._db[k].type !== undefined && this._db[k].type === 'ingredient')
+      .sort((a, b) => this._db[a].title.localeCompare(this._db[b].title));
 
-  keys = () => Object.keys(this._db);
-  values = () => Object.values(this._db);
-  entries = () => Object.entries(this._db);
+  keys = () => Object.keys(this._db).sort((a, b) => this._db[a].title.localeCompare(this._db[b].title));
+  values = () => Object.values(this._db).sort((a, b) => a.title.localeCompare(b.title));
+  entries = () =>
+    Object.entries(this._db).sort((a, b) => {
+      const titleA = a[1].title;
+      const titleB = b[1].title;
+      return titleA.localeCompare(titleB);
+    });
 }
 
 export const scriptsDB = new ScriptsDB();

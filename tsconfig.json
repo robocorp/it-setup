@@ -4,7 +4,7 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
+    "isolatedModules": false,
     "lib": ["es5", "es6", "dom", "es2015", "esnext.asynciterable"],
     "module": "CommonJS",
     "moduleResolution": "node",

@@ -9,7 +9,8 @@ export type LoggerType = {
   warn: (...data: any[]) => void;
   debug: (...data: any[]) => void;
   error: (...data: any[]) => void;
-  output: (msg: string, inner: () => void, type?: logType) => void;
+  trace: (...data: any[]) => void;
+  output: (msg: string, inner: () => Promise<void> | void, type?: logType) => void;
 };
 
 export const getLogger = (p: prop): LoggerType => {
@@ -23,7 +24,9 @@ export const getLogger = (p: prop): LoggerType => {
           p.prefix ? console.log(chalk.blueBright(p.prefix, '-', ...data)) : console.log(chalk.blueBright(...data)),
         error: (...data: any[]) =>
           p.prefix ? console.log(chalk.redBright(p.prefix, '-', ...data)) : console.log(chalk.redBright(...data)),
-        output: (msg: string, inner: () => void, type?: logType) => {
+        trace: (...data: any[]) =>
+          p.prefix ? console.log(chalk.redBright(p.prefix, '-', ...data)) : console.log(chalk.blackBright(...data)),
+        output: async (msg: string, inner: () => Promise<void> | void, type?: logType) => {
           // debug is the default
           let chalkFunc = chalk.blueBright;
           switch (type) {
@@ -41,7 +44,7 @@ export const getLogger = (p: prop): LoggerType => {
           console.log();
           console.log(chalkFunc('---', msg));
           console.log(chalkFunc('-'.repeat(100)));
-          inner();
+          await inner();
           console.log(chalkFunc('-'.repeat(100)));
           console.log();
         },
@@ -51,6 +54,7 @@ export const getLogger = (p: prop): LoggerType => {
         warn: () => {},
         debug: () => {},
         error: () => {},
-        output: () => {},
+        trace: () => {},
+        output: async () => {},
       };
 };

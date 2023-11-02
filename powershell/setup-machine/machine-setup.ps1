@@ -2,6 +2,7 @@
 # title: Machine Setup
 # description: Setup for the device
 # os: windows
+# category: Worker
 # type: recipe
 # ---
 

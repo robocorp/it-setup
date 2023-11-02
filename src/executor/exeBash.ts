@@ -28,7 +28,7 @@ export class BashExe extends IExecutor {
     const cmd = `${this.bin} ${choice.internalPath}`;
     const proc = await processHandler.spawn(cmd, 'BASH_RUN', { consoleParser });
 
-    logger.output('Console Output:', () => {
+    await logger.output('Console Output:', () => {
       logger.debug(consoleParser.stdout);
     });
 
@@ -40,7 +40,7 @@ export class BashExe extends IExecutor {
         logger.error('ERROR: Bash script failed with proc.code:', proc.code);
       }
 
-      logger.output(
+      await logger.output(
         'ERROR log:',
         () => {
           logger.error(consoleParser.stderr);

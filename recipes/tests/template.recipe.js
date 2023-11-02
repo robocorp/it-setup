@@ -3,6 +3,7 @@
 // description: Recipe template to show you can build simple recipes
 // type: recipe
 // executor: js
+// category: Template
 // os: darwin
 // ---
 

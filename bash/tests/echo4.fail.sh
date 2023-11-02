@@ -3,6 +3,7 @@
 # title: Test - Echo Fail
 # description: Echoing and failing
 # os: darwin
+# category: Test
 # type: ingredient
 # ---
 

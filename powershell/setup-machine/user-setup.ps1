@@ -2,6 +2,7 @@
 # title: User Setup
 # description: Setting up user for Robocorp Environment
 # os: windows
+# category: Worker
 # type: recipe
 # ---
 

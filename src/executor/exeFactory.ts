@@ -1,9 +1,11 @@
-import { ExecutorTypes, IExecutor } from './types';
-import { JSExe } from './exeJS';
-
 import { ScriptDataType } from '../types';
 
+import { ExecutorTypes, IExecutor } from './types';
+
+import { JSExe } from './exeJS';
 import { BashExe } from './exeBash';
+import { PowerShellExe } from './exePowerShell';
+import { getExecutorFromExt } from '../utils';
 
 export const ExecutorFactory = (choice: ScriptDataType): IExecutor | undefined => {
   switch (choice.executor) {
@@ -11,16 +13,20 @@ export const ExecutorFactory = (choice: ScriptDataType): IExecutor | undefined =
       return new JSExe();
     case ExecutorTypes.BASH:
       return new BashExe();
+    case ExecutorTypes.POWERSHELL:
+      return new PowerShellExe();
     default:
   }
 
-  if (choice.internalPath) {
-    if (choice.internalPath.endsWith('.js')) {
+  switch (getExecutorFromExt(choice.internalPath)) {
+    case ExecutorTypes.JS:
       return new JSExe();
-    }
-    if (choice.internalPath.endsWith('.sh') || choice.internalPath.endsWith('.bash')) {
+    case ExecutorTypes.BASH:
       return new BashExe();
-    }
+    case ExecutorTypes.POWERSHELL:
+      return new PowerShellExe();
+    default:
+      break;
   }
 
   return undefined;

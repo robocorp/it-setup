@@ -3,6 +3,7 @@
 # description: Allow SSL Legacy Renegociation
 # requirements: User needs to be an admin
 # os: windows
+# category: SSL
 # type: ingredient
 # ---
 

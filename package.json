@@ -10,9 +10,7 @@
   },
   "license": "SEE LICENSE IN LICENSE",
   "main": "index.js",
-  "bin": {
-    "roboit": "./lib/src/cli.js"
-  },
+  "bin": "./lib/it-setup/src/cli.js",
   "pkg": {
     "scripts": "./lib/**/*.js",
     "outputPath": "release",
@@ -36,9 +34,9 @@
     "fix": "npm-run-all fix:prettier fix:lint",
     "fix:prettier": "prettier --write src/ ",
     "fix:lint": "eslint --fix --ext .tsx,.ts .",
-    "dev": "npm-run-all dev:req dev:run",
+    "dev": "cross-env NODE_ENV=development npm-run-all dev:req dev:run",
     "dev:req": "npm-run-all build:assets",
-    "dev:run": "NODE_ENV=development npx ts-node src/cli.ts",
+    "dev:run": "npx ts-node src/cli.ts",
     "exe": "yarn clean && yarn build && yarn pkg . --debug",
     "watch": "tsc --watch"
   },
@@ -47,20 +45,22 @@
   },
   "engineStrict": true,
   "dependencies": {
-    "@robocorp/dev-tools-commons": "^6.0.0",
+    "@robocorp/dev-tools-commons": "6.1.1",
     "chalk": "4.1.2",
     "easy-table": "^1.2.0",
     "figlet": "^1.7.0",
     "log4js": "^6.9.1",
     "nanospinner": "^1.1.0",
     "prompt-sort": "^1.1.0",
-    "prompts": "^2.4.2"
+    "prompts": "^2.4.2",
+    "ts-node": "^10.9.1"
   },
   "devDependencies": {
     "@types/figlet": "^1.5.7",
     "@types/fs-extra": "^11.0.3",
     "@types/prompts": "^2.4.7",
     "copyfiles": "^2.4.1",
+    "cross-env": "^7.0.3",
     "fs-extra": "^11.1.1",
     "npm-run-all": "^4.1.5",
     "pkg": "^5.8.1",
