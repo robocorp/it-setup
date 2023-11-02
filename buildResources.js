@@ -7,17 +7,17 @@ console.log(`--- Building Fridge for RoboChef`);
 console.log(`=== Copying package.json ...`);
 fse.copySync('./package.json', './lib/package.json');
 console.log(`=== Copying powershell ...`);
-fse.copySync('./powershell', './lib/powershell');
+fse.copySync('./powershell', './lib/it-setup/powershell');
 console.log(`=== Copying bash ...`);
-fse.copySync('./bash', './lib/bash');
+fse.copySync('./bash', './lib/it-setup/bash');
 console.log(`=== Copying recipes ...`);
-fse.copySync('./recipes', './lib/recipes');
+fse.copySync('./recipes', './lib/it-setup/recipes');
 
 if (process.env['NODE_ENV'] !== 'development') {
   console.log(`=== Cleaning up test subjects...`);
-  fse.removeSync('./lib/powershell/tests');
-  fse.removeSync('./lib/bash/tests');
-  fse.removeSync('./lib/recipes/tests');
+  fse.removeSync('./lib/it-setup//powershell/tests');
+  fse.removeSync('./lib/it-setup/bash/tests');
+  fse.removeSync('./lib//it-setup/recipes/tests');
 }
 
 console.log('--- The Fridge is complete! Carry on!');

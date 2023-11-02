@@ -15,16 +15,16 @@
     "scripts": "./lib/**/*.js",
     "outputPath": "release",
     "assets": [
-      "./lib/powershell/**/*",
-      "./lib/bash/**/*",
-      "./lib/recipes/**/*",
+      "./lib/it-setup/powershell/**/*",
+      "./lib/it-setup/bash/**/*",
+      "./lib/it-setup/recipes/**/*",
       "./node_modules/figlet/fonts/3D-ASCII.flf"
     ]
   },
   "scripts": {
     "setup": "yarn install",
     "clean": "yarn rimraf lib dist release",
-    "build": "npm-run-all clean build:app build:assets",
+    "build": "npm-run-all clean build:assets build:app",
     "build:app": "npx tsc && npx tsc-alias",
     "build:assets": "node ./buildResources.js",
     "test": "yarn run test:types && jest --runInBand",
