@@ -1,9 +1,9 @@
 # ---
-# title: Test - Echo 1
+# title: Test (PS) - Echo 1
 # description: Echo, echo, echooo...
 # os: windows
 # category: Test
 # type: ingredient
 # ---
 
-Write-Output "Echo 1"
+Write-Output "PS - Echo 1"

@@ -23,5 +23,8 @@ export const getExecutorFromExt = (scriptPath: string): ExecutorTypes | undefine
   if (scriptPath.endsWith('.ps1')) {
     return ExecutorTypes.POWERSHELL;
   }
+  if (scriptPath.endsWith('.py')) {
+    return ExecutorTypes.PYTHON;
+  }
   return undefined;
 };

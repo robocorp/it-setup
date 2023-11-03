@@ -7,6 +7,7 @@ import { BashExe } from './exeBash';
 import { PowerShellExe } from './exePowerShell';
 import { getExecutorFromExt } from '../utils';
 import { getLogger } from '../log';
+import { PythonExe } from './exePython';
 
 const logger = getLogger({ force: true });
 
@@ -18,6 +19,8 @@ export const ExecutorFactory = (choice: ScriptDataType): IExecutor | undefined =
       return new BashExe();
     case ExecutorTypes.POWERSHELL:
       return new PowerShellExe();
+    case ExecutorTypes.PYTHON:
+      return new PythonExe();
     default:
   }
 
@@ -28,6 +31,8 @@ export const ExecutorFactory = (choice: ScriptDataType): IExecutor | undefined =
       return new BashExe();
     case ExecutorTypes.POWERSHELL:
       return new PowerShellExe();
+    case ExecutorTypes.PYTHON:
+      return new PythonExe();
     default:
       break;
   }

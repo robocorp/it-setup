@@ -1,10 +1,10 @@
 #!/bin/bash
 # ---
-# title: Test - Echo 1
+# title: Test (SH) - Echo 1
 # description: Just echoing...
 # os: darwin
 # category: Test
 # type: ingredient
 # ---
 
-echo "Echo 1"
+echo "SH - Echo 1"

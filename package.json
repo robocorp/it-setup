@@ -15,6 +15,7 @@
     "scripts": "./lib/**/*.js",
     "outputPath": "release",
     "assets": [
+      "./lib/it-setup/python/**/*",
       "./lib/it-setup/powershell/**/*",
       "./lib/it-setup/bash/**/*",
       "./lib/it-setup/recipes/**/*",

@@ -5,6 +5,7 @@ export enum ExecutorTypes {
   JS = 'javascript',
   BASH = 'bash',
   POWERSHELL = 'powershell',
+  PYTHON = 'python',
 }
 
 export class IExecutor {

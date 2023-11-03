@@ -34,6 +34,7 @@ class ScriptsDB {
     this._sources.push(path.join(__dirname, '..', '..', 'powershell'));
     this._sources.push(path.join(__dirname, '..', '..', 'bash'));
     this._sources.push(path.join(__dirname, '..', '..', 'recipes'));
+    this._sources.push(path.join(__dirname, '..', '..', 'python'));
     this._sources.push(this._tempDirForUser);
     logger.debug('Sources:', this._sources);
 

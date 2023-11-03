@@ -1,10 +1,9 @@
-#!/bin/bash
 # ---
-# title: Test (SH) - Echo 3
+# title: Test (PY) - Echo 1
 # description: Just echoing...
-# os: darwin
 # category: Test
+# executor: python
 # type: ingredient
 # ---
 
-echo "SH - Echo 3"
+print ("PY - Echo 1")
