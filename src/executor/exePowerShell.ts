@@ -21,12 +21,11 @@ export class PowerShellExe extends IExecutor {
     logger.info('Executing:', choice.title, '-', choice.description ? choice.description : 'No provided description');
     const spinner = createSpinner(`Running ${choice.type}: ${choice.title}`).start();
 
-    const shell = new PowerShell.PowerShell(logger);
+    const shell = new PowerShell.PowerShell();
     const header = 'POWERSHELL_RUN_' + choice.title.toUpperCase().replace(/\s/gi, '_');
     const result = await shell.runAsAdmin(header, choice.internalPath);
 
-    logger.info('Result:', JSON.stringify(result));
-
+    logger.info();
     await logger.output('Console Output:', () => {
       logger.debug(result.io?.stdout);
     });

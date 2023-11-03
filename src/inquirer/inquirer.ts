@@ -16,7 +16,7 @@ type Screen = (...data: any[]) => void;
 class Inquirer {
   _screens: { screen: Screen; args?: any }[] = [];
 
-  _goBackOneScreen = () => {
+  _goBackOneScreen = async () => {
     const screen = this._screens.pop();
     screen ? screen.screen(screen.args) : this.exit();
   };
@@ -26,7 +26,7 @@ class Inquirer {
   };
 
   exit = async () => {
-    logger.info("- Sorry to see you go! Let's cook another time. 👋");
+    logger.info('- Sorry to see you go! Have a great day! 👋');
   };
 
   start: Screen = async () => {
@@ -114,18 +114,24 @@ class Inquirer {
   };
 
   selectRecipe: Screen = async () => {
-    let choices: (InternalChoice | undefined)[] = scriptsDB.recipes().map((path, index) => {
-      const data = scriptsDB.get(path);
-      return data
-        ? {
-            title: data.title,
-            description: data.description,
-            value: index,
-            path: path,
-            disabled: !scriptsDB.isSupported(path),
-          }
-        : undefined;
-    });
+    let choices: (InternalChoice | undefined)[] = scriptsDB
+      .recipes()
+      .sort((a, b) => (scriptsDB.isSupported(a) && !scriptsDB.isSupported(b) ? -1 : 1))
+      .map((path, index) => {
+        const data = scriptsDB.get(path);
+        return data
+          ? {
+              title: data.title,
+              description:
+                data.executor && data.description
+                  ? `(${data.executor?.toLocaleLowerCase()}) ${data.description}`
+                  : data.description,
+              value: index,
+              path: path,
+              disabled: !scriptsDB.isSupported(path),
+            }
+          : undefined;
+      });
 
     const cleanChoices = choices.filter((choice): choice is InternalChoice => !!choice);
 
@@ -158,6 +164,11 @@ class Inquirer {
       ],
     });
 
+    if (response.value === undefined) {
+      this._goBackOneScreen();
+      return;
+    }
+
     switch (response.value) {
       case -1:
         this._saveScreen({ screen: this.selectRecipe });
@@ -178,18 +189,24 @@ class Inquirer {
   };
 
   selectIngredient: Screen = async () => {
-    let choices: (InternalChoice | undefined)[] = scriptsDB.ingredients().map((path, index) => {
-      const data = scriptsDB.get(path);
-      return data
-        ? {
-            title: data.title,
-            description: data.description,
-            value: index,
-            path: path,
-            disabled: !scriptsDB.isSupported(path),
-          }
-        : undefined;
-    });
+    let choices: (InternalChoice | undefined)[] = scriptsDB
+      .ingredients()
+      .sort((a, b) => (scriptsDB.isSupported(a) && !scriptsDB.isSupported(b) ? -1 : 1))
+      .map((path, index) => {
+        const data = scriptsDB.get(path);
+        return data
+          ? {
+              title: data.title,
+              description:
+                data.executor && data.description
+                  ? `(${data.executor?.toLocaleLowerCase()}) ${data.description}`
+                  : data.description,
+              value: index,
+              path: path,
+              disabled: !scriptsDB.isSupported(path),
+            }
+          : undefined;
+      });
     const cleanChoices = choices.filter((choice): choice is InternalChoice => !!choice);
 
     const allDisabled = cleanChoices.every((choice) => choice.disabled === true);
@@ -208,6 +225,7 @@ class Inquirer {
       type: 'select',
       name: 'value',
       message: 'Choose your ingredient:',
+      hint: 'Use arrow-keys. Return to submit. Esc to go back.',
       warn: 'Ingredient cannot be ordered on this OS',
       choices: [
         {
@@ -221,10 +239,16 @@ class Inquirer {
       ],
     });
 
+    if (response.value === undefined) {
+      this._goBackOneScreen();
+      return;
+    }
+
     switch (response.value) {
       case -1:
         this._saveScreen({ screen: this.selectIngredient });
         this.selectMultiple('ingredient');
+        logger.info('>>>> YES - I RAN AFTER MULTIPLE...');
         break;
       case 999:
         this._goBackOneScreen();
@@ -246,34 +270,43 @@ class Inquirer {
     let choices: (InternalChoice | undefined)[];
     switch (type) {
       case 'ingredient':
-        choices = scriptsDB.ingredients().map((path, index) => {
-          const data = scriptsDB.get(path);
-          return data && scriptsDB.isSupported(path)
-            ? { title: data.title, description: data.description, value: index, path: path }
-            : undefined;
-        });
+        choices = scriptsDB
+          .ingredients()
+          .sort((a, b) => (scriptsDB.isSupported(a) && !scriptsDB.isSupported(b) ? -1 : 1))
+          .map((path, index) => {
+            const data = scriptsDB.get(path);
+            return data && scriptsDB.isSupported(path)
+              ? { title: data.title, description: data.description, value: index, path: path }
+              : undefined;
+          });
         break;
       case 'recipe':
-        choices = scriptsDB.recipes().map((path, index) => {
-          const data = scriptsDB.get(path);
-          return data && scriptsDB.isSupported(path)
-            ? { title: data.title, description: data.description, value: index, path: path }
-            : undefined;
-        });
+        choices = scriptsDB
+          .recipes()
+          .sort((a, b) => (scriptsDB.isSupported(a) && !scriptsDB.isSupported(b) ? -1 : 1))
+          .map((path, index) => {
+            const data = scriptsDB.get(path);
+            return data && scriptsDB.isSupported(path)
+              ? { title: data.title, description: data.description, value: index, path: path }
+              : undefined;
+          });
         break;
       default:
-        choices = scriptsDB.keys().map((path, index) => {
-          const data = scriptsDB.get(path);
-          const isRecipe = data?.type === 'recipe';
-          return data && scriptsDB.isSupported(path)
-            ? {
-                title: isRecipe ? `(recipe) ${data.title}` : `(ingredient) ${data.title}`,
-                description: data.description,
-                value: index,
-                path: path,
-              }
-            : undefined;
-        });
+        choices = scriptsDB
+          .keys()
+          .sort((a, b) => (scriptsDB.isSupported(a) && !scriptsDB.isSupported(b) ? -1 : 1))
+          .map((path, index) => {
+            const data = scriptsDB.get(path);
+            const isRecipe = data?.type === 'recipe';
+            return data && scriptsDB.isSupported(path)
+              ? {
+                  title: isRecipe ? `(recipe) ${data.title}` : `(ingredient) ${data.title}`,
+                  description: data.description,
+                  value: index,
+                  path: path,
+                }
+              : undefined;
+          });
     }
 
     const cleanChoices = choices.filter((choice): choice is InternalChoice => !!choice);
@@ -286,12 +319,12 @@ class Inquirer {
       message: `Pick & choose what ${type}(s) you'd like:`,
 
       choices: [...cleanChoices],
-      hint: '- Space to select. Return to submit',
+      hint: '- Space to select | Return to submit | Esc to go back',
     });
 
     logger.debug('These are the picks:', JSON.stringify(response.value, undefined, 4));
 
-    if (!response.value) {
+    if (response.value === undefined) {
       this._goBackOneScreen();
       return;
     }
@@ -351,6 +384,11 @@ class Inquirer {
       choices,
     });
 
+    if (response.value === undefined) {
+      this._goBackOneScreen();
+      return;
+    }
+
     switch (response.value) {
       case 0:
         await logger.output(`'${choice.title}' details:`, () => {
@@ -402,6 +440,11 @@ class Inquirer {
         { title: '< Go back', description: 'Walk back to the previous screen', value: 999 },
       ],
     });
+
+    if (response.value === undefined) {
+      this._goBackOneScreen();
+      return;
+    }
 
     switch (response.value) {
       case 1:

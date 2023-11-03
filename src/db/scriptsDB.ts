@@ -35,10 +35,12 @@ class ScriptsDB {
     this._sources.push(path.join(__dirname, '..', '..', 'bash'));
     this._sources.push(path.join(__dirname, '..', '..', 'recipes'));
     this._sources.push(this._tempDirForUser);
-    const allFilesInFridge: string[] = [];
-    getAllFilePathsInDirectory(path.join(__dirname, '..', '..', '..'), allFilesInFridge);
     logger.debug('Sources:', this._sources);
-    logger.debug('ALL Files:', allFilesInFridge);
+
+    // ! used only for debugging purposes
+    // const allFilesInFridge: string[] = [];
+    // getAllFilePathsInDirectory(path.join(__dirname, '..', '..', '..'), allFilesInFridge);
+    // logger.debug('ALL Files:', allFilesInFridge);
   }
 
   walk = (sources?: string[]) => {
