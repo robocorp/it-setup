@@ -5,7 +5,7 @@ const PromptSort = require('prompt-sort');
 import { scriptsDB } from '../db';
 import { getLogger } from '../log';
 import { ScriptDataPrintable, ScriptDataType, ScriptType } from '../types';
-import { BashExe, ExecutorFactory } from '../executor';
+import { executeSet, ExecutorFactory } from '../executor';
 
 import { Choices, InternalChoice } from './types';
 
@@ -248,8 +248,7 @@ class Inquirer {
       case -1:
         this._saveScreen({ screen: this.selectIngredient });
         this.selectMultiple('ingredient');
-        logger.info('>>>> YES - I RAN AFTER MULTIPLE...');
-        break;
+        return;
       case 999:
         this._goBackOneScreen();
         return;
@@ -270,43 +269,53 @@ class Inquirer {
     let choices: (InternalChoice | undefined)[];
     switch (type) {
       case 'ingredient':
-        choices = scriptsDB
-          .ingredients()
-          .sort((a, b) => (scriptsDB.isSupported(a) && !scriptsDB.isSupported(b) ? -1 : 1))
-          .map((path, index) => {
-            const data = scriptsDB.get(path);
-            return data && scriptsDB.isSupported(path)
-              ? { title: data.title, description: data.description, value: index, path: path }
-              : undefined;
-          });
+        choices = scriptsDB.ingredients().map((path, index) => {
+          const data = scriptsDB.get(path);
+          return data && scriptsDB.isSupported(path)
+            ? {
+                title: data.title,
+                description:
+                  data.executor && data.description
+                    ? `(${data.executor?.toLocaleLowerCase()}) ${data.description}`
+                    : data.description,
+                value: index,
+                path: path,
+              }
+            : undefined;
+        });
         break;
       case 'recipe':
-        choices = scriptsDB
-          .recipes()
-          .sort((a, b) => (scriptsDB.isSupported(a) && !scriptsDB.isSupported(b) ? -1 : 1))
-          .map((path, index) => {
-            const data = scriptsDB.get(path);
-            return data && scriptsDB.isSupported(path)
-              ? { title: data.title, description: data.description, value: index, path: path }
-              : undefined;
-          });
+        choices = scriptsDB.recipes().map((path, index) => {
+          const data = scriptsDB.get(path);
+          return data && scriptsDB.isSupported(path)
+            ? {
+                title: data.title,
+                description:
+                  data.executor && data.description
+                    ? `(${data.executor?.toLocaleLowerCase()}) ${data.description}`
+                    : data.description,
+                value: index,
+                path: path,
+              }
+            : undefined;
+        });
         break;
       default:
-        choices = scriptsDB
-          .keys()
-          .sort((a, b) => (scriptsDB.isSupported(a) && !scriptsDB.isSupported(b) ? -1 : 1))
-          .map((path, index) => {
-            const data = scriptsDB.get(path);
-            const isRecipe = data?.type === 'recipe';
-            return data && scriptsDB.isSupported(path)
-              ? {
-                  title: isRecipe ? `(recipe) ${data.title}` : `(ingredient) ${data.title}`,
-                  description: data.description,
-                  value: index,
-                  path: path,
-                }
-              : undefined;
-          });
+        choices = scriptsDB.keys().map((path, index) => {
+          const data = scriptsDB.get(path);
+          const isRecipe = data?.type === 'recipe';
+          return data && scriptsDB.isSupported(path)
+            ? {
+                title: isRecipe ? `(recipe) ${data.title}` : `(ingredient) ${data.title}`,
+                description:
+                  data.executor && data.description
+                    ? `(${data.executor?.toLocaleLowerCase()}) ${data.description}`
+                    : data.description,
+                value: index,
+                path: path,
+              }
+            : undefined;
+        });
     }
 
     const cleanChoices = choices.filter((choice): choice is InternalChoice => !!choice);
@@ -351,12 +360,29 @@ class Inquirer {
     });
 
     logger.debug('Sorted Indexes:', JSON.stringify(sortedIndexes));
-    this.cookThem(
-      sortedIndexes.map((i) => {
-        const choice = cleanChoices.find((c) => c.value === i);
-        return choice ? scriptsDB.get(choice.path) : undefined;
-      }),
-    );
+
+    const sortedChoices = sortedIndexes.map((i) => {
+      const choice = cleanChoices.find((c) => c.value === i);
+      return choice ? scriptsDB.get(choice.path) : undefined;
+    });
+
+    await logger.output('Current recipe:', () => {
+      logger.info(
+        scriptsDB.getTableData(
+          sortedChoices.map((value, index) => {
+            return value
+              ? {
+                  step: `Step ${index + 1}`,
+                  title: value.title,
+                  description: value.description,
+                }
+              : undefined;
+          }),
+        ),
+      );
+    });
+
+    this.cookThem(sortedChoices);
   };
 
   cookIt = async (choice: ScriptDataType | undefined) => {
@@ -475,10 +501,7 @@ class Inquirer {
         this.cookThem(choices);
         break;
       case 3:
-        const exe = new BashExe();
-        for (let i = 0; i < choices.length; i++) {
-          await exe.run(choices[i]);
-        }
+        await executeSet(choices);
         this._goBackOneScreen();
         break;
       case 999:
