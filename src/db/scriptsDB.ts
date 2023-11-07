@@ -31,10 +31,17 @@ class ScriptsDB {
   constructor() {
     logger.info('Gathering DB sources...');
     logger.debug('NODE_ENV:', process.env['NODE_ENV']);
-    this._sources.push(path.join(__dirname, '..', '..', 'powershell'));
-    this._sources.push(path.join(__dirname, '..', '..', 'bash'));
-    this._sources.push(path.join(__dirname, '..', '..', 'recipes'));
-    this._sources.push(path.join(__dirname, '..', '..', 'python'));
+    if (process.env['NODE_ENV'] === 'development') {
+      this._sources.push(path.join(__dirname, '..', '..', 'powershell'));
+      this._sources.push(path.join(__dirname, '..', '..', 'bash'));
+      this._sources.push(path.join(__dirname, '..', '..', 'recipes'));
+      this._sources.push(path.join(__dirname, '..', '..', 'python'));
+    } else {
+      this._sources.push(path.join(__dirname, '..', '..', 'it-setup', 'powershell'));
+      this._sources.push(path.join(__dirname, '..', '..', 'it-setup', 'bash'));
+      this._sources.push(path.join(__dirname, '..', '..', 'it-setup', 'recipes'));
+      this._sources.push(path.join(__dirname, '..', '..', 'it-setup', 'python'));
+    }
     this._sources.push(this._tempDirForUser);
     logger.debug('Sources:', this._sources);
 

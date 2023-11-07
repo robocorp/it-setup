@@ -10,7 +10,7 @@
   },
   "license": "SEE LICENSE IN LICENSE",
   "main": "index.js",
-  "bin": "./lib/it-setup/src/cli.js",
+  "bin": "./lib/src/cli.js",
   "pkg": {
     "scripts": "./lib/**/*.js",
     "outputPath": "release",
@@ -25,6 +25,8 @@
   "scripts": {
     "setup": "yarn install --force",
     "clean": "yarn rimraf lib dist release",
+    "clean:all": "npm-run-all clean clean:modules",
+    "clean:modules": "yarn rimraf node_modules",
     "build": "npm-run-all clean build:assets build:app",
     "build:app": "npx tsc && npx tsc-alias",
     "build:assets": "node ./buildResources.js",
@@ -38,7 +40,7 @@
     "dev": "cross-env NODE_ENV=development npm-run-all dev:req dev:run",
     "dev:req": "npm-run-all build:assets",
     "dev:run": "npx ts-node src/cli.ts",
-    "exe": "yarn clean && yarn build && yarn pkg . --debug",
+    "exe": "yarn clean && yarn build && yarn pkg .",
     "watch": "tsc --watch"
   },
   "engines": {
@@ -47,10 +49,23 @@
   "engineStrict": true,
   "dependencies": {
     "@robocorp/dev-tools-commons": "6.1.2",
+    "chalk": "4.1.2",
+    "easy-table": "1.2.0",
+    "figlet": "1.7.0",
+    "log4js": "6.9.1",
+    "nanospinner": "1.1.0",
+    "prompt-sort": "1.1.0",
+    "prompts": "2.4.2",
+    "ts-node": "10.9.1"
+  },
+  "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",
-    "chalk": "4.1.2",
-    "easy-table": "^1.2.0",
+    "@types/figlet": "^1.5.7",
+    "@types/fs-extra": "^11.0.3",
+    "@types/prompts": "^2.4.7",
+    "copyfiles": "^2.4.1",
+    "cross-env": "^7.0.3",
     "eslint": "^8.53.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^9.0.0",
@@ -59,19 +74,6 @@
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-jest": "^27.6.0",
     "eslint-plugin-prettier": "^5.0.1",
-    "figlet": "^1.7.0",
-    "log4js": "^6.9.1",
-    "nanospinner": "^1.1.0",
-    "prompt-sort": "^1.1.0",
-    "prompts": "^2.4.2",
-    "ts-node": "^10.9.1"
-  },
-  "devDependencies": {
-    "@types/figlet": "^1.5.7",
-    "@types/fs-extra": "^11.0.3",
-    "@types/prompts": "^2.4.7",
-    "copyfiles": "^2.4.1",
-    "cross-env": "^7.0.3",
     "fs-extra": "^11.1.1",
     "npm-run-all": "^4.1.5",
     "pkg": "^5.8.1",
