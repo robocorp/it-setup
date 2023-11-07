@@ -11,6 +11,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18.17.1'
+          registry-url: https://npm.pkg.github.com/
+          scope: '@robocorp'
+          always-auth: true
       - name: Running Setup...
         run: |
           yarn install --frozen-lockfile --force
