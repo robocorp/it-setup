@@ -1,3 +1,12 @@
+# ---
+# title: Remove Windows Worker
+# description: Running several atomic scripts that would remove the Windows Service & Scheduled task
+# requirements: User needs to be an admin
+# os: windows
+# category: Worker
+# type: recipe
+# ---
+
 [CmdletBinding()]
 param (
     [Parameter(Mandatory=$true)]
@@ -45,7 +54,7 @@ $remainingTasks | ForEach-Object {
 }
 
 # Step 7: Find and remove status files related to the worker
-$workersPath="$env:ProgramData\robocorp\workers" 
+$workersPath="$env:ProgramData\robocorp\workers"
 $matchingFiles = Get-ChildItem -Path $workersPath -Filter '*.json' -Recurse |
     Where-Object { (Get-Content $_.FullName -Raw) -match $SERVICE_NAME }
 

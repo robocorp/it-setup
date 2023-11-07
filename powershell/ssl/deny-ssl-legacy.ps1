@@ -1,3 +1,13 @@
+# ---
+# title: Deny SSL Legacy Renegotiation
+# description: Deny SSL Legacy Renegotiation
+# requirements: User needs to be an admin
+# os: windows
+# category: SSL
+# type: ingredient
+# ---
+
+
 # Check if PowerShell is run as administrator
 if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     Write-Output "Please run this script as an administrator."
@@ -35,7 +45,7 @@ if ([System.Environment]::GetEnvironmentVariable("RC_TLS_LEGACY_RENEGOTIATION_AL
 if ([System.Environment]::GetEnvironmentVariable("RC_TLS_LEGACY_RENEGOTIATION_ALLOWED", [System.EnvironmentVariableTarget]::Machine)) {
     [System.Environment]::SetEnvironmentVariable("RC_TLS_LEGACY_RENEGOTIATION_ALLOWED", $null, [System.EnvironmentVariableTarget]::Machine)
     Write-Output "- RC_TLS_LEGACY_RENEGOTIATION_ALLOWED environment variable removed from system level."
-} 
+}
 
 Write-Output ""
 Write-Output "Done!"

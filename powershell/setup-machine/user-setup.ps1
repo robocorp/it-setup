@@ -1,3 +1,12 @@
+# ---
+# title: User Setup
+# description: Setting up user for Robocorp Environment
+# os: windows
+# category: Worker
+# type: recipe
+# ---
+
+
 # Define customer specific variables
 #$PROFILE_URL = "https://<your sso id>.robocorp.com/.well-known/rcc-profile.yaml"
 #$ASSISTANT_VERSION = "latest" # Set to 'latest' or get version form: https://updates.robocorp.com/tag/assistant
@@ -33,7 +42,7 @@ $LOGFILE = Join-Path -Path $robocorpFolder -ChildPath "user.log"
 
 
 function Log {
-    param ( 
+    param (
         [string]$Message,
         [bool]$LogFileOnly = $false
     )
@@ -80,10 +89,10 @@ function GetRCC {
     if ([string]::IsNullOrEmpty($RCC_VERSION)) {
         $RCC_VERSION = "latest"
     }
-   
+
     Log "Get RCC: $RCC_VERSION"
     curl.exe -s -o $RCC_EXE "https://downloads.robocorp.com/rcc/releases/$RCC_VERSION/windows64/rcc.exe" | Out-File -FilePath $LOGFILE -Append
-    
+
     Log "Using RCC from: $RCC_EXE"
 }
 
@@ -93,10 +102,10 @@ function SetProfile {
     if ([string]::IsNullOrEmpty($PROFILE_URL)) {
         return
     }
-    
+
     Log "Setting profile from: $PROFILE_URL"
     curl.exe -s -o "profile.yaml" $PROFILE_URL | Out-File -FilePath $LOGFILE -Append
-    
+
     RunCommand "$RCC_EXE config import -f 'profile.yaml' -s --silent"
 
     # Just to log the profiles and the activated one
@@ -126,10 +135,10 @@ function FixRobocorpHome {
 
     if ($robocorpHomeNeeded) {
         Log "Detected invalid ROBOCORP_HOME: pathToTest"
-        
+
         # Replace non-ASCII characters
         $cleanedUsername = $env:Username -replace '[^\x20-\x7E]', ''
-        
+
         # Replace spaces
         $cleanedUsername = $cleanedUsername -replace '\s', ''
 
@@ -144,12 +153,12 @@ function FixRobocorpHome {
     }
 
 }
- 
+
 function InstallAssistantForUser {
     param (
         [string]$version
     )
-    
+
     if ([string]::IsNullOrEmpty($version)) {
         return
     }
@@ -167,7 +176,7 @@ function InstallAssistantForUser {
     } else {
         $exe = "robocorp-assistant-win-$version.exe"
     }
-    
+
     $url = "$baseUrl/$exe"
     $installer = Join-Path -Path $robocorpFolder -ChildPath "assistant.exe"
     Log "Downloading Assistant installer"
@@ -182,7 +191,7 @@ try {
     # Start a fresh log
     "Running at: $(Get-Date)" | Out-File -FilePath $LOGFILE
     "Logging to: $LOGFILE"
-    
+
     # Get RCC
     GetRCC
 

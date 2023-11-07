@@ -1,3 +1,12 @@
+# ---
+# title: Get Scripts
+# description: Retrieves scripts
+# requirements: User needs to be an admin
+# os: windows
+# type: ingredient
+# ---
+
+
 # Store the current working directory
 $originalPath = Get-Location
 try {
