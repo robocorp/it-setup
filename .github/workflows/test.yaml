@@ -1,4 +1,4 @@
-name: Tests
+name: Tests & Build
 
 on: [push]
 
@@ -11,9 +11,18 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18.17.1'
-      - name: Test
+      - name: Running Setup...
         run: |
           yarn install --frozen-lockfile --force
+        env:
+          CI: true
+      - name: Running Tests...
+        run: |
           yarn test
+        env:
+          CI: true
+      - name: Running Build...
+        run: |
+          yarn build
         env:
           CI: true
