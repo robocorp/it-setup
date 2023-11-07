@@ -1,5 +1,7 @@
+/* eslint-disable no-case-declarations */
 import prompts from 'prompts';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const PromptSort = require('prompt-sort');
 
 import { scriptsDB } from '../db';
@@ -11,17 +13,17 @@ import { Choices, InternalChoice } from './types';
 
 const logger = getLogger({ force: true });
 
-type Screen = (...data: any[]) => void;
+type Screen = (...data: unknown[]) => void;
 
 class Inquirer {
-  _screens: { screen: Screen; args?: any }[] = [];
+  _screens: { screen: Screen; args?: unknown }[] = [];
 
   _goBackOneScreen = async () => {
     const screen = this._screens.pop();
     screen ? screen.screen(screen.args) : this.exit();
   };
 
-  _saveScreen = (s: { screen: Screen; args?: any }) => {
+  _saveScreen = (s: { screen: Screen; args?: unknown }) => {
     this._screens.push(s);
   };
 
@@ -114,7 +116,7 @@ class Inquirer {
   };
 
   selectRecipe: Screen = async () => {
-    let choices: (InternalChoice | undefined)[] = scriptsDB
+    const choices: (InternalChoice | undefined)[] = scriptsDB
       .recipes()
       .sort((a, b) => (scriptsDB.isSupported(a) && !scriptsDB.isSupported(b) ? -1 : 1))
       .map((path, index) => {
@@ -178,6 +180,7 @@ class Inquirer {
         this._goBackOneScreen();
         return;
       default:
+        // eslint-disable-next-line no-case-declarations
         const path = cleanChoices[response.value] ? cleanChoices[response.value].path : undefined;
         if (path) {
           this._saveScreen({ screen: this.selectRecipe });
@@ -189,7 +192,7 @@ class Inquirer {
   };
 
   selectIngredient: Screen = async () => {
-    let choices: (InternalChoice | undefined)[] = scriptsDB
+    const choices: (InternalChoice | undefined)[] = scriptsDB
       .ingredients()
       .sort((a, b) => (scriptsDB.isSupported(a) && !scriptsDB.isSupported(b) ? -1 : 1))
       .map((path, index) => {
@@ -337,7 +340,7 @@ class Inquirer {
       this._goBackOneScreen();
       return;
     }
-    var prompt = new PromptSort({
+    const prompt = new PromptSort({
       name: 'colors',
       message: `Order ${type}(s) as you please - Shift + Up/Down to reorder | Enter to submit`,
       choices: response.value

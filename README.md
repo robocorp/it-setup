@@ -31,6 +31,7 @@ Hi, I'm **RoboChef**. Here is what I can do for you:
 The included folders are:
 - `./lib/powershell/**/*`
 - `./lib/bash/**/*`
+- `./lib/python/**/*`
 - `./lib/recipes/**/*`
 
 These can be found in `package.json / pkg (section)`

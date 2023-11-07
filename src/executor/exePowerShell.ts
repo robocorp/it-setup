@@ -1,5 +1,5 @@
-import { PowerShell } from '../../../dev-tools-commons/src/index';
 import { createSpinner } from 'nanospinner';
+import { PowerShell } from '@robocorp/dev-tools-commons';
 
 import { getLogger } from '../log';
 import { ScriptDataType } from '../types';

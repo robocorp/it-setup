@@ -6,7 +6,6 @@ import { getLogger } from 'log4js';
 
 const logger = getLogger('Executor');
 
-
 export const resolveUserAppDataRoot = (): string | undefined => {
   switch (os.platform()) {
     case 'darwin':

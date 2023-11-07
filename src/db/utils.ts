@@ -1,3 +1,5 @@
+/* eslint-disable no-useless-escape */
+/* eslint-disable no-sparse-arrays */
 import fs from 'fs';
 import path from 'path';
 
@@ -56,6 +58,7 @@ export const extractScriptData = (path: string, data: string): ScriptDataType | 
   let internalSteps = undefined;
   try {
     logger.debug('Checking if user saved recipe:', path);
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const script = require(path);
     logger.debug('Require is ok:', JSON.stringify(script));
     if (Array.from(script.InnerSteps).length !== 0) {
