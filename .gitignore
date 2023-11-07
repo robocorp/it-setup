@@ -120,6 +120,10 @@ lib/
 release/
 licenses/
 resources/assets/*.exe
+**/*.exe
 
 # User created files
 user/
+
+# Resources
+ssl/profile.yaml

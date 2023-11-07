@@ -8,7 +8,7 @@
 # ---
 
 param (
-    [string]$Level
+    [string]$Level="user"
 )
 
 # Check if PowerShell is run as administrator
@@ -18,7 +18,7 @@ if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 }
 
 # Define the file path
-$opensslConfigPath = Join-Path -Path $env:ProgramData -ChildPath "openssl\openssl.cnf"
+$opensslConfigPath = Join-Path -Path $env:ProgramData -ChildPath "robocorp-openssl\openssl.cnf"
 
 # Check if openssl.cnf file already exists
 if (-not (Test-Path -Path $opensslConfigPath)) {

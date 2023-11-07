@@ -25,7 +25,7 @@ Usage:
 ```
 
 - Use `-Level` to select whether you want the environment variables to be set to system-wide or just for the user
-- Creates OpenSSL config file under %ProgramData%\openssl\openssl.cnf
+- Creates OpenSSL config file under %ProgramData%\robocorp-openssl\openssl.cnf
 - Sets an environment variable `OPENSSL_CONF` that points to the config file
 - Sets an environment variable `RC_TLS_LEGACY_RENEGOTIATION_ALLOWED=true`
   - This tells the Python tools also to allow legacy renegotiation
